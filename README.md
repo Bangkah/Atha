@@ -119,12 +119,17 @@ ATHA writes logs to:
 - Full logo dark (SVG): assets/branding/atha-logo-dark.svg
 - Full logo light (SVG): assets/branding/atha-logo-light.svg
 - Icon mark (SVG): assets/branding/atha-mark.svg
+- Avatar (SVG): assets/branding/atha-avatar.svg
+- Favicon (SVG): assets/branding/atha-favicon.svg
+- Social banner (SVG): assets/branding/atha-banner.svg
 
 Optional PNG export on Arch Linux:
 
 ```bash
 sudo pacman -S librsvg
 rsvg-convert -h 512 -w 512 assets/branding/atha-mark.svg > assets/branding/atha-mark-512.png
+rsvg-convert -h 512 -w 512 assets/branding/atha-avatar.svg > assets/branding/atha-avatar-512.png
+rsvg-convert -h 630 -w 1200 assets/branding/atha-banner.svg > assets/branding/atha-banner-1200x630.png
 ```
 
 ## License
