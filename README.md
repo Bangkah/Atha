@@ -178,15 +178,40 @@ ATHA stores operation history at:
 - Frequent sudo prompts
   - Expected for privileged operations such as install, remove, and update.
 
+## User Feedback Loop
+
+ATHA is maintained with a practical feedback loop so improvements are based on real usage, not assumptions.
+
+1. Use ATHA in daily package workflows.
+2. Report issues with reproducible steps and command output.
+3. Classify feedback into safety, transparency, or auditability.
+4. Ship focused fixes in small releases with clear changelog entries.
+5. Verify improvements with the same user scenarios.
+
+When reporting feedback, include:
+
+- ATHA version (`atha --help` header)
+- Command used
+- Expected behavior
+- Actual behavior
+- Relevant output/error message
+
+Feedback channels:
+
+- GitHub Issues: https://github.com/Bangkah/Atha/issues
+- AUR package comments: https://aur.archlinux.org/packages/atha
+
 ## Documentation
 
 - Wiki Home: [wiki/Home.md](wiki/Home.md)
+- Release Announcement (v2.2.0): [wiki/Release-Announcement-v2.2.0.md](wiki/Release-Announcement-v2.2.0.md)
 - Installation Guide: [wiki/Installation.md](wiki/Installation.md)
 - Commands Guide: [wiki/Commands.md](wiki/Commands.md)
 - Troubleshooting Guide: [wiki/Troubleshooting.md](wiki/Troubleshooting.md)
 - Release Notes: [wiki/Release-Notes.md](wiki/Release-Notes.md)
 - Brand Guidelines: [wiki/Brand-Guidelines.md](wiki/Brand-Guidelines.md)
 - AUR Reviewer Response: [wiki/AUR-Reviewer-Response.md](wiki/AUR-Reviewer-Response.md)
+- User Feedback Loop: [wiki/User-Feedback-Loop.md](wiki/User-Feedback-Loop.md)
 
 ## Project Links
 

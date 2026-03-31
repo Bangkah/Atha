@@ -2,6 +2,8 @@
 
 This page tracks user-visible changes for ATHA releases.
 
+Latest release announcement: [v2.2.0](Release-Announcement-v2.2.0.md)
+
 ## v2.2.0 (2026-04-01)
 
 ### Added
