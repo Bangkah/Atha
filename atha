@@ -27,7 +27,7 @@ if [ ! -d "$BASE" ] && [ -d "$LOCAL_BASE" ]; then
 fi
 
 case $CMD in
-  install|remove|search|update|list|info|doctor)
+  install|remove|search|update|list|info|doctor|history)
         bash "$BASE/$CMD.sh" "$@"
         ;;
     --help|-h|"")
@@ -41,14 +41,21 @@ ${YELLOW}Usage:${RESET}
   atha list [installed|all]     List packages
   atha info <pkg>               Show package info
   atha doctor                   Check dependencies
+  atha history [--limit N]      Show operation history
   atha --help                   Show this help
+
+${YELLOW}Options:${RESET}
+  --dry-run                     Preview action without changing system
+  --yes                         Skip confirmation prompts when available
 
 ${YELLOW}Examples:${RESET}
   atha install vim
+  atha install --dry-run vim neovim
   atha search python
   atha list installed
   atha info bash
   atha doctor
+  atha history --limit 30
   atha update
 
 ${YELLOW}Repository:${RESET}

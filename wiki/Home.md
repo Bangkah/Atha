@@ -19,6 +19,7 @@ atha --help
 - Troubleshooting Guide: [Troubleshooting](Troubleshooting.md)
 - Release Notes: [Release Notes](Release-Notes.md)
 - Brand Guidelines: [Brand Guidelines](Brand-Guidelines.md)
+- AUR Reviewer Response: [AUR Reviewer Response](AUR-Reviewer-Response.md)
 
 ## Useful Links
 

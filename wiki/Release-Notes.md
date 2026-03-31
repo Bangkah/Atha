@@ -2,6 +2,17 @@
 
 This page tracks user-visible changes for ATHA releases.
 
+## v2.1.0 (2026-04-01)
+
+### Added
+- New command: atha history for local operation timeline.
+- Dry-run mode for install, remove, and update commands.
+- Install planning summary before package changes.
+
+### Changed
+- Added confirmation and safer execution flow for package operations.
+- Expanded command and reviewer-facing documentation.
+
 ## v2.0.3 (2026-03-31)
 
 ### Fixed

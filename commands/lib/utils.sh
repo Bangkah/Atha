@@ -4,7 +4,10 @@
 source "$(dirname "${BASH_SOURCE[0]}")/colors.sh"
 
 LOG_FILE="${ATHA_LOG_FILE:-/tmp/atha.log}"
+STATE_DIR="${ATHA_STATE_DIR:-${XDG_STATE_HOME:-$HOME/.local/state}/atha}"
+HISTORY_FILE="$STATE_DIR/history.log"
 LOG_READY=0
+STATE_READY=0
 
 init_log_file() {
     local cache_dir candidate
@@ -28,6 +31,20 @@ init_log_file() {
 
     LOG_FILE="/dev/null"
     LOG_READY=1
+}
+
+init_state_dir() {
+    if [ "$STATE_READY" -eq 1 ]; then
+        return
+    fi
+
+    if mkdir -p "$STATE_DIR" 2>/dev/null; then
+        touch "$HISTORY_FILE" 2>/dev/null || true
+    else
+        HISTORY_FILE="/dev/null"
+    fi
+
+    STATE_READY=1
 }
 
 # Check if running as root
@@ -79,6 +96,26 @@ log() {
     printf "[%s] %s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "$message" >> "$LOG_FILE" 2>/dev/null || true
 }
 
+record_history() {
+    local action=$1
+    local target=$2
+    local source=${3:-unknown}
+    local status=${4:-unknown}
+    local detail=${5:-}
+
+    if [ "$STATE_READY" -ne 1 ]; then
+        init_state_dir
+    fi
+
+    printf "%s|%s|%s|%s|%s|%s\n" \
+        "$(date '+%Y-%m-%d %H:%M:%S')" \
+        "$action" \
+        "$target" \
+        "$source" \
+        "$status" \
+        "$detail" >> "$HISTORY_FILE" 2>/dev/null || true
+}
+
 # Exit with error
 die() {
     log "ERROR: $1"
@@ -86,4 +123,4 @@ die() {
     exit 1
 }
 
-export -f is_root package_exists print_success print_error print_info print_warning print_processing log die
+export -f init_state_dir is_root package_exists print_success print_error print_info print_warning print_processing log record_history die

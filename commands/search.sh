@@ -13,7 +13,7 @@ if [ -z "$SEARCH_TERM" ]; then
     die "Masukkan nama package untuk dicari"
 fi
 
-print_info "atha v2.0 - lightweight package manager"
+print_info "atha v2.1 - lightweight package manager"
 print_processing "Searching: $SEARCH_TERM"
 log "Search requested with term: $SEARCH_TERM"
 echo ""

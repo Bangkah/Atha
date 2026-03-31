@@ -3,15 +3,15 @@
 ## install
 
 ```bash
-atha install <pkg> [pkg2 ...]
+atha install [--dry-run] [--yes] <pkg> [pkg2 ...]
 ```
 
-Installs one or more packages. ATHA checks official repositories first and falls back to AUR when required.
+Installs one or more packages. ATHA builds an install plan first, checks official repositories, and falls back to AUR when required.
 
 ## remove
 
 ```bash
-atha remove <pkg> [pkg2 ...]
+atha remove [--dry-run] [--yes] <pkg> [pkg2 ...]
 ```
 
 Removes one or more installed packages.
@@ -27,7 +27,7 @@ Searches packages by keyword using pacman.
 ## update
 
 ```bash
-atha update
+atha update [--dry-run]
 ```
 
 Runs a full system upgrade via pacman.
@@ -56,7 +56,16 @@ atha doctor
 
 Checks required dependencies and returns a non-zero exit code when required tools are missing.
 
+## history
+
+```bash
+atha history [--limit N] [--full]
+```
+
+Shows the recent ATHA operation timeline from the local history file.
+
 ## Notes
 
 - Commands that modify system packages may require sudo privileges.
 - AUR operations require build tooling such as git and makepkg.
+- Use --dry-run on install, remove, and update for safe previews.

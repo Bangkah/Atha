@@ -8,7 +8,7 @@ source "$(dirname "$0")/lib/utils.sh"
 
 LIST_TYPE=${1:-installed}
 
-print_info "atha v2.0 - lightweight package manager"
+print_info "atha v2.1 - lightweight package manager"
 log "List requested: $LIST_TYPE"
 
 case $LIST_TYPE in

@@ -5,7 +5,7 @@ set -e
 echo "[atha] Installing Atha..."
 
 REPO="https://github.com/Bangkah/Atha.git"
-ARCHIVE_URL="https://github.com/Bangkah/Atha/archive/refs/tags/v2.0.3.tar.gz"
+ARCHIVE_URL="https://github.com/Bangkah/Atha/archive/refs/tags/v2.1.0.tar.gz"
 TMP_DIR="/tmp/atha"
 SRC_DIR=""
 

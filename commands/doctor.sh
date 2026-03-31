@@ -6,7 +6,7 @@
 source "$(dirname "$0")/lib/colors.sh"
 source "$(dirname "$0")/lib/utils.sh"
 
-print_info "atha v2.0 - lightweight package manager"
+print_info "atha v2.1 - lightweight package manager"
 print_processing "Checking system health"
 log "Doctor check requested"
 

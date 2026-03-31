@@ -8,6 +8,14 @@
 ATHA is a lightweight package manager wrapper for Arch Linux, built on top of pacman.
 It provides a clean command interface for daily package operations while preserving native Arch behavior.
 
+## Why ATHA Exists
+
+ATHA was created to simplify daily package operations while keeping full control of Arch Linux behavior.
+
+- Reduces command complexity for common workflows.
+- Improves readability with consistent output and clear status messages.
+- Adds a predictable workflow with planning, validation, and history.
+
 ## Overview
 
 ATHA is designed for users who want a simple, focused CLI without replacing the Arch toolchain.
@@ -19,13 +27,26 @@ ATHA is designed for users who want a simple, focused CLI without replacing the 
 
 ## Features
 
-- Core commands: install, remove, search, update, list, info, doctor.
+- Core commands: install, remove, search, update, list, info, doctor, history.
 - Automatic source detection:
   - Official repositories via pacman.
   - AUR fallback via git clone and makepkg -si.
+- Execution planning before installation (official, AUR, or skip).
+- Dry-run mode for install, remove, and update.
+- Confirmation layer for package-changing actions.
 - Consistent colored output and progress indicator.
 - Input validation and actionable error messages.
-- Basic logging for operational traceability.
+- Operation history tracking for traceability and review.
+
+## What Makes ATHA Different
+
+ATHA is not only a command alias wrapper. It adds workflow-level behavior around pacman.
+
+- Install planning that previews source and action per package before execution.
+- Built-in dry-run safety for install, remove, and update operations.
+- Local operation history through atha history for auditability.
+- Unified command interface with strict validation and readable output.
+- Built-in system validation with atha doctor.
 
 ## Requirements
 
@@ -64,6 +85,7 @@ atha search python
 atha list installed
 atha info bash
 atha doctor
+atha history --limit 20
 atha update
 ```
 
@@ -73,19 +95,29 @@ atha update
 atha install <pkg> [pkg2 ...]
 atha remove <pkg> [pkg2 ...]
 atha search <keyword>
-atha update
+atha update [--dry-run]
 atha list [installed|all]
 atha info <pkg>
 atha doctor
+atha history [--limit N] [--full]
 atha --help
 ```
+
+Options on modifying commands:
+
+- --dry-run: preview without changing system
+- --yes: skip confirmation prompts when supported
 
 ## Operational Behavior
 
 - install skips packages that are already installed.
 - install automatically tries AUR if package is missing in official repositories.
+- install prints an execution plan before running.
+- remove prompts for confirmation unless --yes is used.
+- update supports dry-run preview mode.
 - list all output is intentionally limited for readability.
 - doctor exits with non-zero status when required dependencies are missing.
+- history stores operation timeline in user state directory.
 
 ## Logging
 
@@ -93,6 +125,10 @@ ATHA writes logs to:
 
 - /tmp/atha.log when writable
 - fallback: $XDG_CACHE_HOME/atha/atha.log or ~/.cache/atha/atha.log
+
+ATHA stores operation history at:
+
+- $XDG_STATE_HOME/atha/history.log or ~/.local/state/atha/history.log
 
 ## Troubleshooting
 
@@ -111,6 +147,7 @@ ATHA writes logs to:
 - Troubleshooting Guide: [wiki/Troubleshooting.md](wiki/Troubleshooting.md)
 - Release Notes: [wiki/Release-Notes.md](wiki/Release-Notes.md)
 - Brand Guidelines: [wiki/Brand-Guidelines.md](wiki/Brand-Guidelines.md)
+- AUR Reviewer Response: [wiki/AUR-Reviewer-Response.md](wiki/AUR-Reviewer-Response.md)
 
 ## Project Links
 

@@ -13,7 +13,7 @@ PKG=$1
 
 validate_package_name "$PKG"
 
-print_info "atha v2.0 - lightweight package manager"
+print_info "atha v2.1 - lightweight package manager"
 print_processing "Fetching package info: $PKG"
 log "Info requested for package: $PKG"
 
