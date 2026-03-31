@@ -106,7 +106,11 @@ ATHA writes logs to:
 
 - AUR: https://aur.archlinux.org/packages/atha
 - GitHub: https://github.com/Bangkah/Atha
+- Wiki Home: wiki/Home.md
+- Wiki Installation: wiki/Installation.md
+- Wiki Commands: wiki/Commands.md
+- Wiki Troubleshooting: wiki/Troubleshooting.md
 
 ## License
 
-MIT
+MIT. See LICENSE.
