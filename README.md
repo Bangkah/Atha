@@ -112,6 +112,8 @@ ATHA writes logs to:
 - Wiki Installation: wiki/Installation.md
 - Wiki Commands: wiki/Commands.md
 - Wiki Troubleshooting: wiki/Troubleshooting.md
+- Wiki Release Notes: wiki/Release-Notes.md
+- Wiki Brand Guidelines: wiki/Brand-Guidelines.md
 
 ## Branding Assets
 
@@ -131,6 +133,8 @@ rsvg-convert -h 512 -w 512 assets/branding/atha-mark.svg > assets/branding/atha-
 rsvg-convert -h 512 -w 512 assets/branding/atha-avatar.svg > assets/branding/atha-avatar-512.png
 rsvg-convert -h 630 -w 1200 assets/branding/atha-banner.svg > assets/branding/atha-banner-1200x630.png
 ```
+
+Brand usage guidance is available at wiki/Brand-Guidelines.md.
 
 ## License
 

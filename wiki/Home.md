@@ -16,6 +16,7 @@ atha --help
 - Command Reference: [Commands](Commands.md)
 - Troubleshooting: [Troubleshooting](Troubleshooting.md)
 - Release Notes: [Release Notes](Release-Notes.md)
+- Brand Guidelines: [Brand Guidelines](Brand-Guidelines.md)
 
 ## Useful Links
 
