@@ -21,7 +21,6 @@ while [ $# -gt 0 ]; do
             dry_run=1
             ;;
         --plan)
-            dry_run=1
             plan_only=1
             ;;
         --yes)
@@ -51,35 +50,62 @@ echo ""
 installed_count=0
 missing_count=0
 
-print_section "Remove Plan"
+plan_lines=()
 for pkg in "${packages[@]}"; do
     if pacman -Qi "$pkg" >/dev/null 2>&1; then
         remove_targets+=("$pkg")
         installed_count=$((installed_count + 1))
-        print_info "$pkg -> remove"
+        plan_lines+=("$pkg|remove|official|installed package")
     else
         missing_count=$((missing_count + 1))
-        print_warning "$pkg -> not installed (skip)"
+        plan_lines+=("$pkg|skip|official|not installed")
         record_history "remove" "$pkg" "official" "skipped" "not-installed"
     fi
 done
 
-echo ""
-print_info "Summary: remove=$installed_count skip=$missing_count"
-
 if [ ${#remove_targets[@]} -eq 0 ]; then
-    print_warning "Nothing to remove"
+    if [ "$plan_only" -eq 1 ]; then
+        print_section "PLAN: Decision Analysis"
+        for line in "${plan_lines[@]}"; do
+            IFS='|' read -r pkg action source reason <<< "$line"
+            if [ "$action" = "skip" ]; then
+                echo "  - $pkg -> skip"
+                echo "    reason: $reason"
+            else
+                echo "  - $pkg -> remove"
+                echo "    reason: $reason"
+            fi
+        done
+        echo ""
+        print_info "Summary: remove=$installed_count skip=$missing_count"
+        print_success "Plan completed (no changes applied)"
+    elif [ "$dry_run" -eq 1 ]; then
+        print_section "DRY-RUN: Execution Simulation"
+        print_info "No package changes will be applied"
+        print_info "Execution summary: remove=$installed_count skip=$missing_count"
+        print_success "Dry-run completed (no changes applied)"
+    else
+        print_section "Execution Plan"
+        print_info "Summary: remove=$installed_count skip=$missing_count"
+        print_warning "Nothing to remove"
+    fi
     exit 0
 fi
 
-if [ "$dry_run" -eq 1 ]; then
-    if [ "$plan_only" -eq 1 ]; then
-        print_section "Plan Simulation"
-    else
-        print_section "Execution Preview"
-    fi
+if [ "$plan_only" -eq 1 ]; then
+    print_section "PLAN: Decision Analysis"
+    for line in "${plan_lines[@]}"; do
+        IFS='|' read -r pkg action source reason <<< "$line"
+        if [ "$action" = "skip" ]; then
+            echo "  - $pkg -> skip"
+            echo "    reason: $reason"
+        else
+            echo "  - $pkg -> remove"
+            echo "    reason: $reason"
+        fi
+    done
 
-    print_info "Would run: sudo pacman -R ${remove_targets[*]}"
+    print_section "PLAN: Transaction Impact"
 
     tx_output="$(pacman -R --print --print-format '%n|%s' "${remove_targets[@]}" 2>/dev/null || true)"
     tx_total=0
@@ -103,12 +129,39 @@ if [ "$dry_run" -eq 1 ]; then
                 print_warning "Unable to simulate remove dependency tree for $pkg"
             fi
         fi
-        record_history "remove" "$pkg" "official" "planned" "dry-run"
+        record_history "remove" "$pkg" "official" "planned" "plan:installed package"
     done
     echo ""
-    print_success "Dry-run completed"
+    print_info "Summary: remove=$installed_count skip=$missing_count"
+    print_success "Plan completed (no changes applied)"
     exit 0
 fi
+
+if [ "$dry_run" -eq 1 ]; then
+    print_section "DRY-RUN: Execution Simulation"
+    print_info "No package changes will be applied"
+    print_info "Would execute: sudo pacman -R ${remove_targets[*]}"
+
+    for line in "${plan_lines[@]}"; do
+        IFS='|' read -r pkg action source reason <<< "$line"
+        if [ "$action" = "skip" ]; then
+            print_warning "$pkg -> already absent (skip)"
+            record_history "remove" "$pkg" "$source" "skipped" "dry-run:$reason"
+        else
+            print_info "$pkg -> would execute: sudo pacman -R $pkg"
+            record_history "remove" "$pkg" "$source" "planned" "dry-run:$reason"
+        fi
+    done
+
+    echo ""
+    print_info "Execution summary: remove=$installed_count skip=$missing_count"
+    print_success "Dry-run completed (no changes applied)"
+    exit 0
+fi
+
+print_section "Execution Plan"
+print_info "Targets: ${remove_targets[*]}"
+print_info "Summary: remove=$installed_count skip=$missing_count"
 
 if [ "$auto_yes" -ne 1 ]; then
     read -p "Are you sure? (y/N) " -n 1 -r

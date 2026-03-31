@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented in this file.
 
+## [2.2.3] - 2026-04-01
+
+### Added
+- Strengthened decision transparency for `--plan` with clearer reasoning-oriented sections in install, remove, and update workflows.
+- Expanded history audit capabilities with summary and action/status filters for faster post-operation analysis.
+
+### Changed
+- Separated `--plan` (decision analysis) and `--dry-run` (execution simulation) UX across core commands to avoid feature overlap.
+- Improved command help and documentation wording for plan/dry-run behavior consistency.
+
 ## [2.2.2] - 2026-04-01
 
 ### Fixed

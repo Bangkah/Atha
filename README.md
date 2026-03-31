@@ -34,12 +34,13 @@ ATHA was created to simplify daily package operations while keeping full control
   - Dry-run mode for install, remove, and update.
   - Confirmation layer before package-changing operations.
 2. Transparency
-  - Install planning before execution.
-  - Install planning before execution (official, AUR, or skip).
-  - Plan mode with full transaction simulation (requested + dependency packages).
+  - Decision analysis before execution (`--plan`).
+  - Decision transparency with source selection (official, AUR, or skip).
+  - Plan mode with transaction simulation (requested + dependency packages).
 3. Auditability
   - Structured operation history via `atha history`.
   - Timeline view via `atha history --timeline`.
+  - Summary and filters for operational audits.
 
 ## Overview
 
@@ -58,6 +59,7 @@ ATHA is not only a command alias wrapper. It adds workflow-level behavior around
 | Dry-run on workflow commands | No | Limited | Yes |
 | Install planning preview | No | Limited | Yes |
 | Plan mode with dependency simulation | No | No | Yes |
+| Plan explanations (decision reasoning) | No | No | Yes |
 | Operation history timeline | No | No | Yes |
 | Safety confirmation layer | Limited | Limited | Yes |
 
@@ -118,8 +120,8 @@ atha --help
 
 Options on modifying commands:
 
-- --dry-run: preview without changing system
-- --plan: detailed simulation for install and preview mode for update/remove
+- --plan: decision analysis mode (what will happen and why)
+- --dry-run: execution simulation mode (what command would run)
 - --yes: skip confirmation prompts when supported
 
 ## Operational Behavior

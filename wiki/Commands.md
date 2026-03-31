@@ -8,8 +8,8 @@ atha install [--dry-run] [--plan] [--yes] <pkg> [pkg2 ...]
 
 Installs one or more packages. ATHA builds a plan first, checks official repositories, and falls back to AUR when required.
 
-- `--plan` prints action planning, official transaction simulation (requested + dependencies), and AUR reachability checks.
-- `--dry-run` previews execution actions and commands without modifying the system.
+- `--plan` is decision analysis mode: shows install decisions with reasons, source selection, transaction simulation, and AUR reachability checks.
+- `--dry-run` is execution simulation mode: shows exact commands that would run without modifying the system.
 
 ## remove
 
@@ -19,8 +19,8 @@ atha remove [--dry-run|--plan] [--yes] <pkg> [pkg2 ...]
 
 Removes one or more installed packages.
 
-- `--plan` prints remove plan and transaction impact simulation.
-- `--dry-run` previews exact remove actions and skips missing packages.
+- `--plan` shows remove decisions with reasons and transaction impact simulation.
+- `--dry-run` shows exact remove commands that would execute and skips missing packages.
 
 ## search
 
@@ -38,7 +38,8 @@ atha update [--dry-run|--plan]
 
 Runs a full system upgrade via pacman.
 
-- `--plan` behaves as preview mode, checks available updates, and prints execution command.
+- `--plan` is decision analysis mode: shows which updates are available and why.
+- `--dry-run` is execution simulation mode: shows update list and exact update command.
 
 ## list
 

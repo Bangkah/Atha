@@ -55,8 +55,8 @@ ${YELLOW}Usage:${RESET}
   atha --help                   Show this help
 
 ${YELLOW}Options:${RESET}
-  --dry-run                     Safe preview without changing system
-  --plan                        Core planning mode (simulation-first workflow)
+  --plan                        Decision analysis mode (what and why)
+  --dry-run                     Execution simulation mode (what would run)
   --yes                         Skip confirmation prompts when available
   --timeline                    Show history as chronological events
   --summary                     Show history summary by action and status

@@ -5,7 +5,9 @@ Thank you for the review and for taking the time to evaluate ATHA.
 I agree that tools in AUR should provide clear value beyond simply wrapping existing commands. ATHA has been updated to introduce workflow-level features on top of pacman:
 
 * Install planning with transaction simulation and source visibility (official, AUR, or skipped)
-* Dry-run support for install, remove, and update operations with explicit execution preview
+* Distinct planning and simulation modes:
+	* `--plan` for decision analysis (what will happen and why)
+	* `--dry-run` for execution simulation (what command would run)
 * Confirmation layer for package-changing actions
 * Persistent operation history via `atha history` with timeline, summary, and filters
 * Built-in validation and runtime/system checks via `atha doctor`

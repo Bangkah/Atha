@@ -2,7 +2,17 @@
 
 This page tracks user-visible changes for ATHA releases.
 
-Latest release announcement: v2.2.2
+Latest release announcement: v2.2.3
+
+## v2.2.3 (2026-04-01)
+
+### Added
+- Clearer decision-analysis sections for `--plan` across install, remove, and update.
+- Stronger history audit utilities with summary and action/status filtering.
+
+### Changed
+- Enforced behavioral split between `--plan` and `--dry-run` to reduce overlap and improve reviewer clarity.
+- Refined help and command documentation for consistency and operational readability.
 
 ## v2.2.2 (2026-04-01)
 
