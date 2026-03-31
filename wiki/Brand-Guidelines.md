@@ -1,6 +1,6 @@
 # Brand Guidelines
 
-This page defines how to use ATHA visual assets consistently across GitHub, AUR, screenshots, and social posts.
+This page defines how ATHA visual assets should be used consistently across GitHub, AUR, screenshots, and social posts.
 
 ## Core Identity
 
@@ -24,6 +24,12 @@ This page defines how to use ATHA visual assets consistently across GitHub, AUR,
 - Use mark/avatar for repository profile image and compact placements.
 - Use banner for social preview images and announcements.
 - Prefer SVG as source-of-truth to avoid quality loss.
+
+## Color and Contrast
+
+- Use the light logo on dark backgrounds.
+- Use the dark logo on light backgrounds.
+- Preserve contrast for accessibility and screenshot readability.
 
 ## Minimum Clear Space
 
@@ -73,3 +79,8 @@ rsvg-convert -h 630 -w 1200 assets/branding/atha-banner.svg > assets/branding/at
 ## License
 
 Brand assets follow the same repository license unless otherwise stated.
+
+## Attribution
+
+When reusing ATHA branding in third-party materials, include a visible reference to:
+- https://github.com/Bangkah/Atha

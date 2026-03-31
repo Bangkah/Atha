@@ -1,5 +1,7 @@
 # Installation
 
+This guide covers all supported installation methods for ATHA on Arch Linux.
+
 ## Requirements
 
 - Arch Linux
@@ -7,32 +9,55 @@
 - pacman
 - sudo
 - tar
-- One of: git, curl, or wget
-- makepkg (for AUR builds)
+- one of: git, curl, or wget
+- makepkg (required for AUR fallback builds)
 
-## Install from AUR
+## Recommended Method (AUR)
 
-Use your AUR helper:
+Install ATHA using your preferred AUR helper:
 
 ```bash
 yay -S atha
 ```
 
-## One-line installer with curl
+## One-Line Installer (curl)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Bangkah/Atha/main/install.sh | bash
 ```
 
-## One-line installer with wget
+## One-Line Installer (wget)
 
 ```bash
 wget -qO- https://raw.githubusercontent.com/Bangkah/Atha/main/install.sh | bash
 ```
 
-## Verify installation
+## Verify Installation
 
 ```bash
 atha --help
 atha doctor
 ```
+
+Expected result:
+- `atha --help` prints the command reference.
+- `atha doctor` reports whether required system dependencies are available.
+
+## Update ATHA
+
+If ATHA was installed via AUR:
+
+```bash
+yay -Syu atha
+```
+
+## Uninstall ATHA
+
+```bash
+sudo pacman -Rns atha
+```
+
+## Notes
+
+- AUR package metadata may take a few minutes to refresh after maintainer pushes.
+- For security, review installer scripts before running one-line commands in production environments.

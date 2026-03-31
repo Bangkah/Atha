@@ -1,5 +1,7 @@
 # Release Notes
 
+This page tracks user-visible changes for ATHA releases.
+
 ## v2.0.3 (2026-03-31)
 
 ### Fixed
@@ -36,3 +38,8 @@
 ### Changed
 - Improved command dispatcher and help output.
 - Strengthened command validation and operational checks.
+
+## Upgrade Guidance
+
+- Users installing from AUR should run `yay -Syu atha`.
+- Maintainers should ensure `.SRCINFO` is updated whenever `PKGBUILD` changes.
