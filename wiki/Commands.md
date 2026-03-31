@@ -6,7 +6,7 @@
 atha install <pkg> [pkg2 ...]
 ```
 
-Installs one or more packages. ATHA checks official repositories first, then falls back to AUR.
+Installs one or more packages. ATHA checks official repositories first and falls back to AUR when required.
 
 ## remove
 
@@ -22,7 +22,7 @@ Removes one or more installed packages.
 atha search <keyword>
 ```
 
-Searches packages using pacman.
+Searches packages by keyword using pacman.
 
 ## update
 
@@ -30,7 +30,7 @@ Searches packages using pacman.
 atha update
 ```
 
-Runs full system upgrade.
+Runs a full system upgrade via pacman.
 
 ## list
 
@@ -38,7 +38,7 @@ Runs full system upgrade.
 atha list [installed|all]
 ```
 
-Shows installed packages or a limited list of all packages.
+Shows installed packages or a limited list of all available packages.
 
 ## info
 
@@ -46,7 +46,7 @@ Shows installed packages or a limited list of all packages.
 atha info <pkg>
 ```
 
-Displays package metadata.
+Displays package metadata from repositories.
 
 ## doctor
 
@@ -54,4 +54,9 @@ Displays package metadata.
 atha doctor
 ```
 
-Checks required dependencies and returns non-zero exit code if required tools are missing.
+Checks required dependencies and returns a non-zero exit code when required tools are missing.
+
+## Notes
+
+- Commands that modify system packages may require sudo privileges.
+- AUR operations require build tooling such as git and makepkg.
