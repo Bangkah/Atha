@@ -1,48 +1,59 @@
-# ATHA
+# ATHA - Lightweight Package Manager Wrapper for Arch Linux
 
-Lightweight package manager wrapper for Arch Linux.
+[![AUR version](https://img.shields.io/aur/version/atha)](https://aur.archlinux.org/packages/atha)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-ATHA provides a cleaner CLI experience for common package tasks while still using the Arch toolchain (`pacman`, `makepkg`, AUR git repos).
+ATHA is a simple and fast Arch Linux package manager wrapper built on top of pacman.
+It helps with daily package operations through a cleaner CLI while keeping native Arch behavior.
+
+Keywords: Arch Linux, AUR helper, pacman wrapper, package manager CLI, yay alternative.
+
+## Why ATHA
+
+- Minimal command surface for daily package tasks.
+- Official repo + AUR install flow in one command.
+- Consistent CLI output with status icons and color.
+- Built-in health check command for environment validation.
 
 ## Features
 
-- Clean command set: `install`, `remove`, `search`, `update`, `list`, `info`, `doctor`
-- Automatic source detection for install:
-	- Official repository via `pacman`
-	- AUR fallback via `git clone` + `makepkg -si`
-- Colored and consistent CLI output
-- Basic operation logging to `/tmp/atha.log`
+- Command set: install, remove, search, update, list, info, doctor.
+- Automatic install source detection:
+  - Official repositories via pacman.
+  - AUR fallback via git clone + makepkg -si.
+- Progress output and basic operation logging.
+- Helpful validation for missing dependencies and invalid usage.
 
 ## Requirements
 
 - Arch Linux
-- `bash`
-- `pacman`
-- `sudo`
-- `git` (for AUR installs)
-- `makepkg` (for AUR builds)
+- bash
+- pacman
+- sudo
+- git (for AUR installs)
+- makepkg (for AUR builds)
 
-## Install
+## Installation
 
-From AUR:
+### AUR (recommended)
 
 ```bash
 yay -S atha
 ```
 
-Via curl:
+### One-line install (curl)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Bangkah/Atha/main/install.sh | bash
 ```
 
-Via wget:
+### One-line install (wget)
 
 ```bash
 wget -qO- https://raw.githubusercontent.com/Bangkah/Atha/main/install.sh | bash
 ```
 
-## Usage
+## Command Reference
 
 ```bash
 atha install <pkg> [pkg2 ...]
@@ -55,7 +66,7 @@ atha doctor
 atha --help
 ```
 
-## Examples
+## Usage Examples
 
 ```bash
 atha install vim
@@ -70,27 +81,31 @@ atha update
 
 ## Behavior Notes
 
-- `atha install` skips packages that are already installed.
-- If package is not found in official repo, ATHA tries AUR automatically.
-- `atha list all` shows the first 50 repository entries.
-- `atha doctor` exits with non-zero status if dependencies are missing.
+- atha install skips packages that are already installed.
+- If a package is not found in official repositories, ATHA tries AUR automatically.
+- atha list all shows a limited result set for readability.
+- atha doctor returns non-zero exit code if required dependencies are missing.
 
 ## Logs
 
-ATHA writes basic logs to:
+ATHA writes logs to:
 
-```text
-/tmp/atha.log
-```
+- /tmp/atha.log when writable.
+- Fallback: $XDG_CACHE_HOME/atha/atha.log or ~/.cache/atha/atha.log.
 
 ## Troubleshooting
 
-- `pacman: command not found`
-	- Run ATHA only on Arch Linux.
-- `Permission denied (publickey)` when publishing AUR package
-	- Add your correct SSH public key in AUR Account settings.
-- `sudo` prompt keeps appearing
-	- This is expected for privileged operations like install, remove, and update.
+- pacman: command not found
+  - Run ATHA on Arch Linux.
+- Permission denied (publickey) while publishing AUR
+  - Add the correct SSH public key in your AUR account settings.
+- Frequent sudo prompts
+  - Normal for privileged actions such as install, remove, and update.
+
+## Project Links
+
+- AUR: https://aur.archlinux.org/packages/atha
+- GitHub: https://github.com/Bangkah/Atha
 
 ## License
 
