@@ -8,6 +8,12 @@
 ATHA is a lightweight package manager wrapper for Arch Linux, built on top of pacman.
 It provides a clean command interface for daily package operations while preserving native Arch behavior.
 
+ATHA positioning:
+
+- Safety and workflow layer for pacman.
+- Focused on safety, transparency, and auditability.
+- Not a replacement for pacman or yay.
+
 ## Why ATHA Exists
 
 ATHA was created to simplify daily package operations while keeping full control of Arch Linux behavior.
@@ -15,6 +21,24 @@ ATHA was created to simplify daily package operations while keeping full control
 - Reduces command complexity for common workflows.
 - Improves readability with consistent output and clear status messages.
 - Adds a predictable workflow with planning, validation, and history.
+
+## Problems ATHA Solves
+
+- Package actions often run as black-box operations for everyday users.
+- It is difficult to review what will happen before install.
+- Native command history is not tailored for package-operation auditing.
+
+## Core Pillars
+
+1. Safety
+  - Dry-run mode for install, remove, and update.
+  - Confirmation layer before package-changing operations.
+2. Transparency
+  - Install planning before execution.
+  - Dependency and size simulation with `atha install --plan <pkg>`.
+3. Auditability
+  - Structured operation history via `atha history`.
+  - Timeline view via `atha history --timeline`.
 
 ## Overview
 
@@ -32,6 +56,7 @@ ATHA is designed for users who want a simple, focused CLI without replacing the 
   - Official repositories via pacman.
   - AUR fallback via git clone and makepkg -si.
 - Execution planning before installation (official, AUR, or skip).
+- Plan mode with dependency simulation for official packages.
 - Dry-run mode for install, remove, and update.
 - Confirmation layer for package-changing actions.
 - Consistent colored output and progress indicator.
@@ -43,10 +68,22 @@ ATHA is designed for users who want a simple, focused CLI without replacing the 
 ATHA is not only a command alias wrapper. It adds workflow-level behavior around pacman.
 
 - Install planning that previews source and action per package before execution.
+- Install simulation tree preview with `--plan`.
 - Built-in dry-run safety for install, remove, and update operations.
-- Local operation history through atha history for auditability.
+- Local operation history through `atha history` for auditability.
+- Chronological timeline view through `atha history --timeline`.
 - Unified command interface with strict validation and readable output.
 - Built-in system validation with atha doctor.
+
+## Feature Comparison
+
+| Feature | pacman | yay | ATHA |
+| --- | --- | --- | --- |
+| Dry-run on workflow commands | No | Limited | Yes |
+| Install planning preview | No | Limited | Yes |
+| Plan mode with dependency simulation | No | No | Yes |
+| Operation history timeline | No | No | Yes |
+| Safety confirmation layer | Limited | Limited | Yes |
 
 ## Requirements
 
@@ -93,19 +130,21 @@ atha update
 
 ```bash
 atha install <pkg> [pkg2 ...]
+atha install --plan <pkg> [pkg2 ...]
 atha remove <pkg> [pkg2 ...]
 atha search <keyword>
 atha update [--dry-run]
 atha list [installed|all]
 atha info <pkg>
 atha doctor
-atha history [--limit N] [--full]
+atha history [--limit N] [--full|--timeline]
 atha --help
 ```
 
 Options on modifying commands:
 
 - --dry-run: preview without changing system
+- --plan: preview dependencies and planned install actions
 - --yes: skip confirmation prompts when supported
 
 ## Operational Behavior

@@ -46,15 +46,19 @@ ${YELLOW}Usage:${RESET}
 
 ${YELLOW}Options:${RESET}
   --dry-run                     Preview action without changing system
+  --plan                        Show install simulation and dependency preview
   --yes                         Skip confirmation prompts when available
+  --timeline                    Show history as chronological events
 
 ${YELLOW}Examples:${RESET}
   atha install vim
   atha install --dry-run vim neovim
+  atha install --plan vim
   atha search python
   atha list installed
   atha info bash
   atha doctor
+  atha history --timeline
   atha history --limit 30
   atha update
 

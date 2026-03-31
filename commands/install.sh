@@ -19,6 +19,7 @@ cleanup_on_exit() {
 trap cleanup_on_exit EXIT
 
 dry_run=0
+plan_only=0
 auto_yes=0
 packages=()
 
@@ -26,6 +27,9 @@ while [ $# -gt 0 ]; do
     case "$1" in
         --dry-run)
             dry_run=1
+            ;;
+        --plan)
+            plan_only=1
             ;;
         --yes)
             auto_yes=1
@@ -80,6 +84,40 @@ for line in "${plan_lines[@]}"; do
     fi
 done
 echo ""
+
+if [ "$plan_only" -eq 1 ]; then
+    print_processing "Dependency and size simulation"
+    for line in "${plan_lines[@]}"; do
+        IFS='|' read -r pkg action source <<< "$line"
+        if [ "$action" = "skip" ]; then
+            continue
+        fi
+
+        if [ "$source" = "official" ]; then
+            echo ""
+            print_info "Plan for $pkg"
+            if pacman -S --print --print-format '  - %n (%s bytes)' "$pkg" 2>/dev/null; then
+                :
+            else
+                print_warning "Unable to simulate dependency tree for $pkg"
+            fi
+        else
+            print_warning "$pkg is from AUR; dependency simulation is not available via pacman"
+        fi
+    done
+
+    for line in "${plan_lines[@]}"; do
+        IFS='|' read -r pkg action source <<< "$line"
+        if [ "$action" = "skip" ]; then
+            record_history "install" "$pkg" "$source" "skipped" "plan"
+        else
+            record_history "install" "$pkg" "$source" "planned" "plan"
+        fi
+    done
+    echo ""
+    print_success "Plan completed"
+    exit 0
+fi
 
 if [ "$dry_run" -eq 1 ]; then
     log "Install dry-run requested for packages: ${packages[*]}"

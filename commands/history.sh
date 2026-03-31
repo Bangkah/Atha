@@ -8,6 +8,7 @@ source "$(dirname "$0")/lib/utils.sh"
 
 limit=20
 full=0
+timeline=0
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -20,6 +21,9 @@ while [ $# -gt 0 ]; do
             ;;
         --full)
             full=1
+            ;;
+        --timeline)
+            timeline=1
             ;;
         *)
             die "Unknown option: $1"
@@ -41,7 +45,11 @@ if [ ! -s "$HISTORY_FILE" ]; then
 fi
 
 echo ""
-if [ "$full" -eq 1 ]; then
+if [ "$timeline" -eq 1 ]; then
+    tail -n "$limit" "$HISTORY_FILE" | awk -F'|' '{
+        printf "[%s] %s %s (%s, %s)\n", $1, toupper($2), $3, $4, $5
+    }'
+elif [ "$full" -eq 1 ]; then
     tail -n "$limit" "$HISTORY_FILE" | awk -F'|' '{
         printf "%-19s | %-7s | %-24s | %-8s | %-7s | %s\n", $1, $2, $3, $4, $5, $6
     }'

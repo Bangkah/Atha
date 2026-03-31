@@ -3,10 +3,12 @@
 ## install
 
 ```bash
-atha install [--dry-run] [--yes] <pkg> [pkg2 ...]
+atha install [--dry-run] [--plan] [--yes] <pkg> [pkg2 ...]
 ```
 
 Installs one or more packages. ATHA builds an install plan first, checks official repositories, and falls back to AUR when required.
+
+- `--plan` prints action planning and dependency simulation without performing installation.
 
 ## remove
 
@@ -59,13 +61,16 @@ Checks required dependencies and returns a non-zero exit code when required tool
 ## history
 
 ```bash
-atha history [--limit N] [--full]
+atha history [--limit N] [--full|--timeline]
 ```
 
 Shows the recent ATHA operation timeline from the local history file.
+
+- `--timeline` prints concise chronological events.
 
 ## Notes
 
 - Commands that modify system packages may require sudo privileges.
 - AUR operations require build tooling such as git and makepkg.
 - Use --dry-run on install, remove, and update for safe previews.
+- Use --plan on install for dependency and size simulation previews.
