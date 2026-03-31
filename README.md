@@ -1,5 +1,7 @@
 # ATHA - Lightweight Package Manager Wrapper for Arch Linux
 
+![ATHA Logo](assets/branding/atha-logo.svg)
+
 [![AUR version](https://img.shields.io/aur/version/atha)](https://aur.archlinux.org/packages/atha)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -110,6 +112,20 @@ ATHA writes logs to:
 - Wiki Installation: wiki/Installation.md
 - Wiki Commands: wiki/Commands.md
 - Wiki Troubleshooting: wiki/Troubleshooting.md
+
+## Branding Assets
+
+- Full logo (SVG): assets/branding/atha-logo.svg
+- Full logo dark (SVG): assets/branding/atha-logo-dark.svg
+- Full logo light (SVG): assets/branding/atha-logo-light.svg
+- Icon mark (SVG): assets/branding/atha-mark.svg
+
+Optional PNG export on Arch Linux:
+
+```bash
+sudo pacman -S librsvg
+rsvg-convert -h 512 -w 512 assets/branding/atha-mark.svg > assets/branding/atha-mark-512.png
+```
 
 ## License
 

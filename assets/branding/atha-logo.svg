@@ -1,0 +1,38 @@
+<svg width="960" height="280" viewBox="0 0 960 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">ATHA Logo</title>
+  <desc id="desc">ATHA wordmark with geometric icon in orange and slate tones</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="100%" stop-color="#17223a"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff8a00"/>
+      <stop offset="100%" stop-color="#ff5a36"/>
+    </linearGradient>
+    <linearGradient id="accent2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="280" rx="28" fill="url(#bg)"/>
+
+  <g transform="translate(42,40)" filter="url(#soft)">
+    <rect x="0" y="0" width="200" height="200" rx="46" fill="#0f1a2e" stroke="#27354f" stroke-width="2"/>
+    <polygon points="100,20 170,60 170,140 100,180 30,140 30,60" fill="#0c1426" stroke="#324767" stroke-width="2"/>
+    <polygon points="100,36 153,66 153,134 100,164 47,134 47,66" fill="url(#accent)"/>
+    <path d="M100 63 L127 126 H112 L104 106 H96 L88 126 H73 L100 63 Z" fill="#ffffff"/>
+    <rect x="92" y="109" width="16" height="14" fill="#ffffff"/>
+    <circle cx="146" cy="150" r="12" fill="url(#accent2)"/>
+  </g>
+
+  <g transform="translate(280,84)">
+    <text x="0" y="80" fill="#f8fafc" font-family="Segoe UI, Ubuntu, Arial, sans-serif" font-weight="800" font-size="96" letter-spacing="4">ATHA</text>
+    <rect x="2" y="98" width="382" height="6" rx="3" fill="url(#accent)"/>
+    <text x="2" y="136" fill="#94a3b8" font-family="Segoe UI, Ubuntu, Arial, sans-serif" font-weight="600" font-size="30" letter-spacing="1.2">LIGHTWEIGHT PACKAGE MANAGER</text>
+  </g>
+</svg>

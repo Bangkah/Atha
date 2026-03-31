@@ -1,0 +1,29 @@
+<svg width="960" height="280" viewBox="0 0 960 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">ATHA Logo Light</title>
+  <desc id="desc">ATHA wordmark with geometric icon for light backgrounds</desc>
+  <defs>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff8a00"/>
+      <stop offset="100%" stop-color="#ff5a36"/>
+    </linearGradient>
+    <linearGradient id="accent2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(42,40)">
+    <rect x="0" y="0" width="200" height="200" rx="46" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+    <polygon points="100,20 170,60 170,140 100,180 30,140 30,60" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+    <polygon points="100,36 153,66 153,134 100,164 47,134 47,66" fill="url(#accent)"/>
+    <path d="M100 63 L127 126 H112 L104 106 H96 L88 126 H73 L100 63 Z" fill="#ffffff"/>
+    <rect x="92" y="109" width="16" height="14" fill="#ffffff"/>
+    <circle cx="146" cy="150" r="12" fill="url(#accent2)"/>
+  </g>
+
+  <g transform="translate(280,84)">
+    <text x="0" y="80" fill="#0f172a" font-family="Segoe UI, Ubuntu, Arial, sans-serif" font-weight="800" font-size="96" letter-spacing="4">ATHA</text>
+    <rect x="2" y="98" width="382" height="6" rx="3" fill="url(#accent)"/>
+    <text x="2" y="136" fill="#475569" font-family="Segoe UI, Ubuntu, Arial, sans-serif" font-weight="600" font-size="30" letter-spacing="1.2">LIGHTWEIGHT PACKAGE MANAGER</text>
+  </g>
+</svg>

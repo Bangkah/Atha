@@ -1,0 +1,25 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">ATHA Mark</title>
+  <desc id="desc">ATHA geometric app icon</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="100%" stop-color="#17223a"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff8a00"/>
+      <stop offset="100%" stop-color="#ff5a36"/>
+    </linearGradient>
+    <linearGradient id="accent2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="12" y="12" width="488" height="488" rx="112" fill="url(#bg)"/>
+  <polygon points="256,74 386,149 386,299 256,374 126,299 126,149" fill="#0c1426" stroke="#324767" stroke-width="6"/>
+  <polygon points="256,106 358,164 358,284 256,342 154,284 154,164" fill="url(#accent)"/>
+  <path d="M256 156 L306 273 H278 L263 236 H249 L234 273 H206 L256 156 Z" fill="#ffffff"/>
+  <rect x="242" y="241" width="28" height="24" fill="#ffffff"/>
+  <circle cx="344" cy="317" r="20" fill="url(#accent2)"/>
+</svg>
