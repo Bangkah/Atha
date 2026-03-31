@@ -5,6 +5,8 @@ pkgdesc="Lightweight package manager wrapper for Arch Linux"
 arch=('any')
 url="https://github.com/Bangkah/Atha"
 license=('MIT')
+conflicts=('atha')
+replaces=('atha')
 
 depends=('bash' 'pacman' 'sudo' 'git' 'base-devel')
 
