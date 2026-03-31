@@ -13,8 +13,11 @@ LOCAL_BASE="$SCRIPT_DIR/commands"
 SYSTEM_BASE="/usr/lib/atha/commands"
 BASE="$LOCAL_BASE"
 
-# Use installed command set only when running from /usr/bin.
-if [ "$SCRIPT_DIR" = "/usr/bin" ] && [ -d "$SYSTEM_BASE" ]; then
+# Prefer local command set when running from source checkout.
+# For installed binaries (/usr/bin or /usr/sbin), fall back to system commands.
+if [ -d "$LOCAL_BASE" ]; then
+  BASE="$LOCAL_BASE"
+elif [ -d "$SYSTEM_BASE" ]; then
   BASE="$SYSTEM_BASE"
 fi
 

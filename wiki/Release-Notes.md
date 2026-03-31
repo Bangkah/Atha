@@ -2,7 +2,13 @@
 
 This page tracks user-visible changes for ATHA releases.
 
-Latest release announcement: v2.2.1
+Latest release announcement: v2.2.2
+
+## v2.2.2 (2026-04-01)
+
+### Fixed
+- Fixed installed command dispatching so packaged `atha` correctly executes scripts from `/usr/lib/atha/commands`.
+- Removed a regression where installed builds attempted to run non-existent paths under `/usr/sbin/commands`.
 
 ## v2.2.1 (2026-04-01)
 

@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [2.2.2] - 2026-04-01
+
+### Fixed
+- Fixed installed dispatcher path resolution so packaged binaries correctly load commands from `/usr/lib/atha/commands`.
+- Resolved command execution failures where installed `atha` incorrectly tried to execute scripts from `/usr/sbin/commands`.
+
 ## [2.2.1] - 2026-04-01
 
 ### Added
