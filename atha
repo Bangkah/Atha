@@ -1,0 +1,18 @@
+#!/bin/bash
+
+CMD=$1
+shift
+
+BASE="/usr/lib/atha"
+
+case $CMD in
+    install)
+        bash "$BASE/commands/install.sh" "$@"
+        ;;
+    remove)
+        bash "$BASE/commands/remove.sh" "$@"
+        ;;
+    *)
+        echo "Usage: atha {install|remove}"
+        ;;
+esac
