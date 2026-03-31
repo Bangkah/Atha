@@ -2,6 +2,16 @@
 
 This page tracks user-visible changes for ATHA releases.
 
+## v2.2.0 (2026-04-01)
+
+### Added
+- Install simulation mode via `atha install --plan <pkg>` with dependency and size preview for official packages.
+- Timeline mode via `atha history --timeline` for chronological operation review.
+
+### Changed
+- Strengthened README value positioning around safety, transparency, and auditability.
+- Updated command documentation for plan and timeline workflows.
+
 ## v2.1.0 (2026-04-01)
 
 ### Added

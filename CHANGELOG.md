@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented in this file.
 
+## [2.2.0] - 2026-04-01
+
+### Added
+- Install simulation mode via `atha install --plan <pkg>` with dependency and size preview for official packages.
+- Timeline output mode via `atha history --timeline` for chronological operation review.
+
+### Changed
+- Expanded value positioning in README with identity pillars and feature comparison.
+- Updated command documentation to include new plan and timeline workflows.
+
 ## [2.1.0] - 2026-04-01
 
 ### Added
