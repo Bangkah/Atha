@@ -53,59 +53,90 @@ for pkg in "${packages[@]}"; do
 done
 
 echo ""
-print_info "atha v2.1 - lightweight package manager"
+print_info "atha - safety and workflow layer for pacman"
 print_processing "Starting installation flow"
 echo ""
 
 plan_lines=()
 actionable_count=0
+official_count=0
+aur_count=0
+skip_count=0
+official_targets=()
+aur_targets=()
+skipped_targets=()
 
 for pkg in "${packages[@]}"; do
     if pacman -Qi "$pkg" &>/dev/null; then
         plan_lines+=("$pkg|skip|installed")
+        skipped_targets+=("$pkg")
+        skip_count=$((skip_count + 1))
         continue
     fi
 
     actionable_count=$((actionable_count + 1))
     if pacman -Si "$pkg" &>/dev/null; then
         plan_lines+=("$pkg|install|official")
+        official_targets+=("$pkg")
+        official_count=$((official_count + 1))
     else
         plan_lines+=("$pkg|install|aur")
+        aur_targets+=("$pkg")
+        aur_count=$((aur_count + 1))
     fi
 done
 
-print_processing "Install plan"
-for line in "${plan_lines[@]}"; do
-    IFS='|' read -r pkg action source <<< "$line"
-    if [ "$action" = "skip" ]; then
-        print_warning "$pkg -> already installed (skip)"
-    else
-        print_info "$pkg -> install from $source"
-    fi
-done
+print_section "Plan Overview"
+if [ ${#official_targets[@]} -gt 0 ]; then
+    print_info "Official repo targets: ${official_targets[*]}"
+fi
+if [ ${#aur_targets[@]} -gt 0 ]; then
+    print_info "AUR targets: ${aur_targets[*]}"
+fi
+if [ ${#skipped_targets[@]} -gt 0 ]; then
+    print_warning "Skipped (already installed): ${skipped_targets[*]}"
+fi
+
+echo ""
+print_info "Summary: install=$actionable_count official=$official_count aur=$aur_count skip=$skip_count"
 echo ""
 
-if [ "$plan_only" -eq 1 ]; then
-    print_processing "Dependency and size simulation"
-    for line in "${plan_lines[@]}"; do
-        IFS='|' read -r pkg action source <<< "$line"
-        if [ "$action" = "skip" ]; then
-            continue
-        fi
+if [ ${#official_targets[@]} -gt 0 ]; then
+    print_section "Official Transaction Simulation"
+    official_txn="$(pacman -S --print --print-format '%n|%s' "${official_targets[@]}" 2>/dev/null || true)"
+    if [ -n "$official_txn" ]; then
+        official_txn_count="$(printf "%s\n" "$official_txn" | sed '/^\s*$/d' | wc -l | tr -d ' ')"
+        official_bytes="$(printf "%s\n" "$official_txn" | awk -F'|' '{sum+=$2} END {print sum+0}')"
+        print_info "Packages in transaction (requested + dependencies): $official_txn_count"
+        print_info "Estimated download size: $(format_bytes "$official_bytes")"
+        while IFS='|' read -r txn_pkg txn_size; do
+            [ -z "$txn_pkg" ] && continue
+            marker="dependency"
+            for req_pkg in "${official_targets[@]}"; do
+                if [ "$txn_pkg" = "$req_pkg" ]; then
+                    marker="requested"
+                    break
+                fi
+            done
+            echo "  - $txn_pkg ($(format_bytes "$txn_size"), $marker)"
+        done <<< "$official_txn"
+    else
+        print_warning "Unable to simulate official transaction"
+    fi
+fi
 
-        if [ "$source" = "official" ]; then
-            echo ""
-            print_info "Plan for $pkg"
-            if pacman -S --print --print-format '  - %n (%s bytes)' "$pkg" 2>/dev/null; then
-                :
-            else
-                print_warning "Unable to simulate dependency tree for $pkg"
-            fi
+if [ ${#aur_targets[@]} -gt 0 ]; then
+    print_section "AUR Reachability Check"
+    for pkg in "${aur_targets[@]}"; do
+        if command -v git >/dev/null 2>&1 && git ls-remote --exit-code "https://aur.archlinux.org/${pkg}.git" >/dev/null 2>&1; then
+            print_success "$pkg repository reachable"
         else
-            print_warning "$pkg is from AUR; dependency simulation is not available via pacman"
+            print_warning "$pkg repository not reachable or git unavailable"
         fi
     done
+fi
 
+if [ "$plan_only" -eq 1 ]; then
     for line in "${plan_lines[@]}"; do
         IFS='|' read -r pkg action source <<< "$line"
         if [ "$action" = "skip" ]; then
@@ -121,14 +152,26 @@ fi
 
 if [ "$dry_run" -eq 1 ]; then
     log "Install dry-run requested for packages: ${packages[*]}"
+    print_section "Execution Preview"
+    if [ ${#official_targets[@]} -gt 0 ]; then
+        print_info "Official -> would run: sudo pacman -S ${official_targets[*]}"
+    fi
     for line in "${plan_lines[@]}"; do
         IFS='|' read -r pkg action source <<< "$line"
         if [ "$action" = "skip" ]; then
             record_history "install" "$pkg" "$source" "skipped" "dry-run"
+            print_warning "$pkg -> already installed (skip)"
         else
             record_history "install" "$pkg" "$source" "planned" "dry-run"
+            if [ "$source" = "official" ]; then
+                print_info "$pkg -> pacman transaction"
+            else
+                print_info "$pkg -> would run: git clone https://aur.archlinux.org/$pkg.git && makepkg -si --noconfirm"
+            fi
         fi
     done
+    echo ""
+    print_info "Dry-run summary: install=$actionable_count official=$official_count aur=$aur_count skip=$skip_count"
     print_success "Dry-run completed"
     exit 0
 fi

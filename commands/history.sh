@@ -9,6 +9,9 @@ source "$(dirname "$0")/lib/utils.sh"
 limit=20
 full=0
 timeline=0
+summary=0
+action_filter=""
+status_filter=""
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -25,6 +28,23 @@ while [ $# -gt 0 ]; do
         --timeline)
             timeline=1
             ;;
+        --summary)
+            summary=1
+            ;;
+        --action)
+            shift
+            if [ -z "$1" ]; then
+                die "Invalid --action value"
+            fi
+            action_filter="$1"
+            ;;
+        --status)
+            shift
+            if [ -z "$1" ]; then
+                die "Invalid --status value"
+            fi
+            status_filter="$1"
+            ;;
         *)
             die "Unknown option: $1"
             ;;
@@ -34,9 +54,9 @@ done
 
 init_state_dir
 
-print_info "atha v2.1 - lightweight package manager"
+print_info "atha - safety and workflow layer for pacman"
 print_processing "Showing recent history"
-log "History requested (limit=$limit full=$full)"
+log "History requested (limit=$limit full=$full timeline=$timeline summary=$summary action=$action_filter status=$status_filter)"
 
 if [ ! -s "$HISTORY_FILE" ]; then
     echo ""
@@ -45,17 +65,41 @@ if [ ! -s "$HISTORY_FILE" ]; then
 fi
 
 echo ""
-if [ "$timeline" -eq 1 ]; then
-    tail -n "$limit" "$HISTORY_FILE" | awk -F'|' '{
-        printf "[%s] %s %s (%s, %s)\n", $1, toupper($2), $3, $4, $5
+history_data="$(tail -n "$limit" "$HISTORY_FILE")"
+
+if [ -n "$action_filter" ]; then
+    history_data="$(printf "%s\n" "$history_data" | awk -F'|' -v a="$action_filter" '$2==a')"
+fi
+
+if [ -n "$status_filter" ]; then
+    history_data="$(printf "%s\n" "$history_data" | awk -F'|' -v s="$status_filter" '$5==s')"
+fi
+
+if [ -z "$(printf "%s\n" "$history_data" | sed '/^\s*$/d')" ]; then
+    print_warning "No history matched the selected filters"
+    exit 0
+fi
+
+if [ "$summary" -eq 1 ]; then
+    print_section "Summary by action"
+    printf "%s\n" "$history_data" | awk -F'|' '{count[$2]++} END {for (k in count) printf "  - %s: %d\n", k, count[k]}' | sort
+    print_section "Summary by status"
+    printf "%s\n" "$history_data" | awk -F'|' '{count[$5]++} END {for (k in count) printf "  - %s: %d\n", k, count[k]}' | sort
+elif [ "$timeline" -eq 1 ]; then
+    printf "%s\n" "$history_data" | awk -F'|' '{
+        detail=$6
+        if (detail == "") detail="-"
+        printf "[%s] %-7s %-20s status=%-9s source=%-8s detail=%s\n", $1, toupper($2), $3, $5, $4, detail
     }'
 elif [ "$full" -eq 1 ]; then
-    tail -n "$limit" "$HISTORY_FILE" | awk -F'|' '{
-        printf "%-19s | %-7s | %-24s | %-8s | %-7s | %s\n", $1, $2, $3, $4, $5, $6
+    printf "%s\n" "$history_data" | awk -F'|' '{
+        detail=$6
+        if (detail == "") detail="-"
+        printf "%-19s | %-7s | %-24s | %-8s | %-9s | %s\n", $1, $2, $3, $4, $5, detail
     }'
 else
-    tail -n "$limit" "$HISTORY_FILE" | awk -F'|' '{
-        printf "%-19s | %-7s | %-24s | %-8s | %-7s\n", $1, $2, $3, $4, $5
+    printf "%s\n" "$history_data" | awk -F'|' '{
+        printf "%-19s | %-7s | %-24s | %-8s | %-9s\n", $1, $2, $3, $4, $5
     }'
 fi
 

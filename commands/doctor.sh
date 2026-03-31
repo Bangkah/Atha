@@ -6,12 +6,36 @@
 source "$(dirname "$0")/lib/colors.sh"
 source "$(dirname "$0")/lib/utils.sh"
 
-print_info "atha v2.1 - lightweight package manager"
+print_info "atha - safety and workflow layer for pacman"
 print_processing "Checking system health"
 log "Doctor check requested"
 
 echo ""
 missing_count=0
+warning_count=0
+
+check_path_writable() {
+    local path=$1
+    local label=$2
+    if [ -d "$path" ] && [ -w "$path" ]; then
+        print_success "$label writable: $path"
+    elif mkdir -p "$path" 2>/dev/null; then
+        print_success "$label writable: $path"
+    else
+        print_warning "$label not writable: $path"
+        warning_count=$((warning_count + 1))
+    fi
+}
+
+check_host() {
+    local host=$1
+    if getent hosts "$host" >/dev/null 2>&1; then
+        print_success "DNS reachable: $host"
+    else
+        print_warning "DNS unresolved: $host"
+        warning_count=$((warning_count + 1))
+    fi
+}
 
 check_cmd() {
     local cmd=$1
@@ -31,9 +55,31 @@ check_cmd git
 check_cmd makepkg
 
 echo ""
-if [ "$missing_count" -eq 0 ]; then
-    print_success "Doctor check completed"
+print_section "Runtime checks"
+
+if [ -f /var/lib/pacman/db.lck ]; then
+    print_warning "pacman database lock exists (/var/lib/pacman/db.lck)"
+    warning_count=$((warning_count + 1))
 else
-    print_warning "Doctor found $missing_count missing dependency(ies)"
+    print_success "pacman database lock not present"
+fi
+
+check_path_writable "${XDG_CACHE_HOME:-$HOME/.cache}/atha" "Cache directory"
+check_path_writable "${XDG_STATE_HOME:-$HOME/.local/state}/atha" "State directory"
+
+echo ""
+print_section "Connectivity checks"
+check_host "archlinux.org"
+check_host "aur.archlinux.org"
+
+echo ""
+if [ "$missing_count" -eq 0 ]; then
+    if [ "$warning_count" -eq 0 ]; then
+        print_success "Doctor check completed (healthy)"
+    else
+        print_warning "Doctor completed with $warning_count warning(s)"
+    fi
+else
+    print_warning "Doctor found $missing_count missing dependency(ies) and $warning_count warning(s)"
     exit 1
 fi

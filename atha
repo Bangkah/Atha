@@ -8,8 +8,15 @@ if [ $# -gt 0 ]; then
   shift
 fi
 
-BASE="/usr/lib/atha/commands"
-LOCAL_BASE="$(cd "$(dirname "$0")" && pwd)/commands"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+LOCAL_BASE="$SCRIPT_DIR/commands"
+SYSTEM_BASE="/usr/lib/atha/commands"
+BASE="$LOCAL_BASE"
+
+# Use installed command set only when running from /usr/bin.
+if [ "$SCRIPT_DIR" = "/usr/bin" ] && [ -d "$SYSTEM_BASE" ]; then
+  BASE="$SYSTEM_BASE"
+fi
 
 if [ -f "$BASE/lib/colors.sh" ]; then
   source "$BASE/lib/colors.sh"
@@ -45,15 +52,22 @@ ${YELLOW}Usage:${RESET}
   atha --help                   Show this help
 
 ${YELLOW}Options:${RESET}
-  --dry-run                     Preview action without changing system
-  --plan                        Show install simulation and dependency preview
+  --dry-run                     Safe preview without changing system
+  --plan                        Core planning mode (simulation-first workflow)
   --yes                         Skip confirmation prompts when available
   --timeline                    Show history as chronological events
+  --summary                     Show history summary by action and status
+  --action <name>               Filter history by action (install/remove/update)
+  --status <name>               Filter history by status (success/failed/planned/...)
 
 ${YELLOW}Examples:${RESET}
   atha install vim
   atha install --dry-run vim neovim
   atha install --plan vim
+  atha remove --plan vim
+  atha update --plan
+  atha history --summary --limit 50
+  atha history --action install --status success --timeline
   atha search python
   atha list installed
   atha info bash

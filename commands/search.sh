@@ -13,19 +13,20 @@ if [ -z "$SEARCH_TERM" ]; then
     die "Masukkan nama package untuk dicari"
 fi
 
-print_info "atha v2.1 - lightweight package manager"
+print_info "atha - safety and workflow layer for pacman"
 print_processing "Searching: $SEARCH_TERM"
 log "Search requested with term: $SEARCH_TERM"
 echo ""
 
 # Search in repository
-pacman -Ss "$SEARCH_TERM" | head -30
+results="$(pacman -Ss "$SEARCH_TERM" 2>/dev/null)"
 
-if [ ${PIPESTATUS[0]} -eq 0 ]; then
+if [ -n "$results" ]; then
+    printf '%s\n' "$results" | sed -n '1,30p'
     log "Search success for term: $SEARCH_TERM"
     echo ""
     print_success "Search complete"
 else
-    log "Search failed for term: $SEARCH_TERM"
-    die "Search failed"
+    log "Search no results: $SEARCH_TERM"
+    die "No packages found for: $SEARCH_TERM"
 fi

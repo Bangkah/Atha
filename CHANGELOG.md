@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented in this file.
 
+## [2.2.1] - 2026-04-01
+
+### Added
+- Enhanced install planning output with dependency simulation, source grouping, and total download estimate.
+- Added history filters and summary mode via `atha history --action`, `--status`, and `--summary`.
+- Expanded doctor checks with runtime path validation, lock-state check, and DNS reachability diagnostics.
+
+### Changed
+- Standardized dry-run and plan UX across install, remove, and update flows.
+- Improved preview output consistency and non-destructive execution transparency.
+
 ## [2.2.0] - 2026-04-01
 
 ### Added

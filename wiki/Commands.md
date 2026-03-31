@@ -6,17 +6,21 @@
 atha install [--dry-run] [--plan] [--yes] <pkg> [pkg2 ...]
 ```
 
-Installs one or more packages. ATHA builds an install plan first, checks official repositories, and falls back to AUR when required.
+Installs one or more packages. ATHA builds a plan first, checks official repositories, and falls back to AUR when required.
 
-- `--plan` prints action planning and dependency simulation without performing installation.
+- `--plan` prints action planning, official transaction simulation (requested + dependencies), and AUR reachability checks.
+- `--dry-run` previews execution actions and commands without modifying the system.
 
 ## remove
 
 ```bash
-atha remove [--dry-run] [--yes] <pkg> [pkg2 ...]
+atha remove [--dry-run|--plan] [--yes] <pkg> [pkg2 ...]
 ```
 
 Removes one or more installed packages.
+
+- `--plan` prints remove plan and transaction impact simulation.
+- `--dry-run` previews exact remove actions and skips missing packages.
 
 ## search
 
@@ -29,10 +33,12 @@ Searches packages by keyword using pacman.
 ## update
 
 ```bash
-atha update [--dry-run]
+atha update [--dry-run|--plan]
 ```
 
 Runs a full system upgrade via pacman.
+
+- `--plan` behaves as preview mode, checks available updates, and prints execution command.
 
 ## list
 
@@ -56,21 +62,30 @@ Displays package metadata from repositories.
 atha doctor
 ```
 
-Checks required dependencies and returns a non-zero exit code when required tools are missing.
+Checks required dependencies and returns non-zero exit code when required tools are missing.
+
+Doctor also checks runtime readiness:
+
+- pacman lock state
+- writable cache/state paths
+- DNS reachability for archlinux.org and aur.archlinux.org
 
 ## history
 
 ```bash
-atha history [--limit N] [--full|--timeline]
+atha history [--limit N] [--full|--timeline|--summary] [--action <name>] [--status <name>]
 ```
 
-Shows the recent ATHA operation timeline from the local history file.
+Shows recent ATHA operations from local history state.
 
 - `--timeline` prints concise chronological events.
+- `--summary` prints counts by action and status.
+- `--action` filters events by action (`install`, `remove`, `update`).
+- `--status` filters events by status (`success`, `failed`, `planned`, `cancelled`, `skipped`).
 
 ## Notes
 
 - Commands that modify system packages may require sudo privileges.
-- AUR operations require build tooling such as git and makepkg.
-- Use --dry-run on install, remove, and update for safe previews.
-- Use --plan on install for dependency and size simulation previews.
+- AUR operations require build tooling such as `git` and `makepkg`.
+- Use `--dry-run` on install, remove, and update for safe previews.
+- Use `--plan` to inspect planned actions before execution.

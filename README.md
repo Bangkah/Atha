@@ -35,48 +35,24 @@ ATHA was created to simplify daily package operations while keeping full control
   - Confirmation layer before package-changing operations.
 2. Transparency
   - Install planning before execution.
-  - Dependency and size simulation with `atha install --plan <pkg>`.
+  - Install planning before execution (official, AUR, or skip).
+  - Plan mode with full transaction simulation (requested + dependency packages).
 3. Auditability
   - Structured operation history via `atha history`.
   - Timeline view via `atha history --timeline`.
 
 ## Overview
 
-ATHA is designed for users who want a simple, focused CLI without replacing the Arch toolchain.
-
 - Uses pacman for official repositories.
 - Falls back to AUR build flow when a package is not found in official repos.
-- Keeps command usage minimal and predictable.
-- Includes built-in environment checks through doctor command.
-
-## Features
-
-- Core commands: install, remove, search, update, list, info, doctor, history.
-- Automatic source detection:
   - Official repositories via pacman.
   - AUR fallback via git clone and makepkg -si.
 - Execution planning before installation (official, AUR, or skip).
 - Plan mode with dependency simulation for official packages.
 - Dry-run mode for install, remove, and update.
-- Confirmation layer for package-changing actions.
-- Consistent colored output and progress indicator.
-- Input validation and actionable error messages.
-- Operation history tracking for traceability and review.
-
-## What Makes ATHA Different
-
 ATHA is not only a command alias wrapper. It adds workflow-level behavior around pacman.
 
 - Install planning that previews source and action per package before execution.
-- Install simulation tree preview with `--plan`.
-- Built-in dry-run safety for install, remove, and update operations.
-- Local operation history through `atha history` for auditability.
-- Chronological timeline view through `atha history --timeline`.
-- Unified command interface with strict validation and readable output.
-- Built-in system validation with atha doctor.
-
-## Feature Comparison
-
 | Feature | pacman | yay | ATHA |
 | --- | --- | --- | --- |
 | Dry-run on workflow commands | No | Limited | Yes |
@@ -97,9 +73,6 @@ ATHA is not only a command alias wrapper. It adds workflow-level behavior around
 ## Installation
 
 ### AUR (recommended)
-
-```bash
-yay -S atha
 ```
 
 ### One-line install (curl)
@@ -131,9 +104,11 @@ atha update
 ```bash
 atha install <pkg> [pkg2 ...]
 atha install --plan <pkg> [pkg2 ...]
+atha install --dry-run <pkg> [pkg2 ...]
 atha remove <pkg> [pkg2 ...]
+atha remove --plan <pkg> [pkg2 ...]
 atha search <keyword>
-atha update [--dry-run]
+atha update [--dry-run|--plan]
 atha list [installed|all]
 atha info <pkg>
 atha doctor
@@ -144,16 +119,17 @@ atha --help
 Options on modifying commands:
 
 - --dry-run: preview without changing system
-- --plan: preview dependencies and planned install actions
+- --plan: detailed simulation for install and preview mode for update/remove
 - --yes: skip confirmation prompts when supported
 
 ## Operational Behavior
 
 - install skips packages that are already installed.
 - install automatically tries AUR if package is missing in official repositories.
-- install prints an execution plan before running.
+- install prints an execution plan before running and can simulate dependencies and download sizes.
 - remove prompts for confirmation unless --yes is used.
-- update supports dry-run preview mode.
+- remove supports plan-mode preview and skips packages that are not installed.
+- update supports dry-run and plan-mode with update availability checks.
 - list all output is intentionally limited for readability.
 - doctor exits with non-zero status when required dependencies are missing.
 - history stores operation timeline in user state directory.

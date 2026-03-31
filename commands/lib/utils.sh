@@ -87,6 +87,32 @@ print_processing() {
     echo -e "${BLUE}[atha] 🔄 $1${RESET}"
 }
 
+# Print section header
+print_section() {
+    echo ""
+    echo -e "${BLUE}==> $1${RESET}"
+}
+
+# Format bytes into human-readable units
+format_bytes() {
+    local bytes=$1
+    local unit=(B KiB MiB GiB TiB)
+    local i=0
+    local value="$bytes"
+
+    if ! [[ "$bytes" =~ ^[0-9]+$ ]]; then
+        echo "$bytes"
+        return
+    fi
+
+    while [ "$value" -ge 1024 ] && [ $i -lt 4 ]; do
+        value=$((value / 1024))
+        i=$((i + 1))
+    done
+
+    echo "$value ${unit[$i]}"
+}
+
 # Write log line to log file
 log() {
     local message=$1
@@ -123,4 +149,4 @@ die() {
     exit 1
 }
 
-export -f init_state_dir is_root package_exists print_success print_error print_info print_warning print_processing log record_history die
+export -f init_state_dir is_root package_exists print_success print_error print_info print_warning print_processing print_section format_bytes log record_history die

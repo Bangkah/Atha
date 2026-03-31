@@ -2,7 +2,18 @@
 
 This page tracks user-visible changes for ATHA releases.
 
-Latest release announcement: [v2.2.0](Release-Announcement-v2.2.0.md)
+Latest release announcement: v2.2.1
+
+## v2.2.1 (2026-04-01)
+
+### Added
+- Enhanced install planning output with dependency simulation, source grouping, and total download estimate.
+- Added history filters and summary mode (`--action`, `--status`, `--summary`) for stronger audit workflows.
+- Expanded doctor intelligence checks for path writability, pacman lock state, and DNS reachability.
+
+### Changed
+- Standardized plan and dry-run output across install, remove, and update commands.
+- Improved command preview consistency for safer package operations.
 
 ## v2.2.0 (2026-04-01)
 
