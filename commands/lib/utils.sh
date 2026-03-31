@@ -4,6 +4,31 @@
 source "$(dirname "${BASH_SOURCE[0]}")/colors.sh"
 
 LOG_FILE="${ATHA_LOG_FILE:-/tmp/atha.log}"
+LOG_READY=0
+
+init_log_file() {
+    local cache_dir candidate
+
+    candidate="$LOG_FILE"
+    if touch "$candidate" 2>/dev/null; then
+        LOG_FILE="$candidate"
+        LOG_READY=1
+        return
+    fi
+
+    cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/atha"
+    if mkdir -p "$cache_dir" 2>/dev/null; then
+        candidate="$cache_dir/atha.log"
+        if touch "$candidate" 2>/dev/null; then
+            LOG_FILE="$candidate"
+            LOG_READY=1
+            return
+        fi
+    fi
+
+    LOG_FILE="/dev/null"
+    LOG_READY=1
+}
 
 # Check if running as root
 is_root() {
@@ -48,7 +73,10 @@ print_processing() {
 # Write log line to log file
 log() {
     local message=$1
-    printf "[%s] %s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "$message" >> "$LOG_FILE"
+    if [ "$LOG_READY" -ne 1 ]; then
+        init_log_file
+    fi
+    printf "[%s] %s\n" "$(date '+%Y-%m-%d %H:%M:%S')" "$message" >> "$LOG_FILE" 2>/dev/null || true
 }
 
 # Exit with error
