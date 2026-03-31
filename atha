@@ -16,10 +16,10 @@ if [ -f "$BASE/lib/colors.sh" ]; then
 elif [ -f "$LOCAL_BASE/lib/colors.sh" ]; then
   source "$LOCAL_BASE/lib/colors.sh"
 else
-  RED="\033[1;31m"
-  YELLOW="\033[1;33m"
-  BLUE="\033[1;34m"
-  RESET="\033[0m"
+  RED=$'\033[1;31m'
+  YELLOW=$'\033[1;33m'
+  BLUE=$'\033[1;34m'
+  RESET=$'\033[0m'
 fi
 
 if [ ! -d "$BASE" ] && [ -d "$LOCAL_BASE" ]; then
@@ -31,17 +31,16 @@ case $CMD in
         bash "$BASE/$CMD.sh" "$@"
         ;;
     --help|-h|"")
-        cat << EOF
-${BLUE}atha${RESET} - Simple Package Manager Wrapper
+        printf "%b" "${BLUE}atha${RESET} - Simple Package Manager Wrapper
 
 ${YELLOW}Usage:${RESET}
-  atha install <pkg>           Install package
-  atha remove <pkg>            Remove package  
-  atha search <pkg>            Search package
+  atha install <pkg>            Install package
+  atha remove <pkg>             Remove package
+  atha search <pkg>             Search package
   atha update                   Update system
-  atha list [installed|all]    List packages
-  atha info <pkg>              Show package info
-  atha doctor                  Check dependencies
+  atha list [installed|all]     List packages
+  atha info <pkg>               Show package info
+  atha doctor                   Check dependencies
   atha --help                   Show this help
 
 ${YELLOW}Examples:${RESET}
@@ -54,7 +53,7 @@ ${YELLOW}Examples:${RESET}
 
 ${YELLOW}Repository:${RESET}
   https://github.com/Bangkah/Atha
-EOF
+"
         ;;
     *)
   echo -e "${RED}[atha] ❌ Unknown command: $CMD${RESET}"

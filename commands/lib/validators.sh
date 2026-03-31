@@ -32,6 +32,14 @@ validate_command() {
 
 # Check sudo availability
 validate_sudo() {
+    if is_root; then
+        return 0
+    fi
+
+    if ! command -v sudo &>/dev/null; then
+        die "sudo tidak ditemukan. Jalankan sebagai root atau install sudo"
+    fi
+
     if ! sudo -n true 2>/dev/null; then
         print_warning "This command requires sudo"
         if ! sudo -v; then

@@ -1,0 +1,4 @@
+# Keep shell scripts Unix-compatible
+*.sh text eol=lf
+atha text eol=lf
+PKGBUILD text eol=lf
