@@ -1,16 +1,23 @@
 # ATHA Wiki
 
-Welcome to the ATHA wiki.
+ATHA is a lightweight package manager wrapper for Arch Linux built on top of pacman.
 
-ATHA is a simple and fast Arch Linux package manager wrapper built on top of pacman.
+## Quick Start
 
-## Start Here
+```bash
+yay -S atha
+atha doctor
+atha --help
+```
 
-- Installation guide: see Installation.md
-- Command reference: see Commands.md
-- Troubleshooting: see Troubleshooting.md
+## Documentation
 
-## Project Links
+- Installation: [Installation](Installation.md)
+- Command Reference: [Commands](Commands.md)
+- Troubleshooting: [Troubleshooting](Troubleshooting.md)
+- Release Notes: [Release Notes](Release-Notes.md)
+
+## Useful Links
 
 - Repository: https://github.com/Bangkah/Atha
-- AUR package: https://aur.archlinux.org/packages/atha
+- AUR Package: https://aur.archlinux.org/packages/atha
