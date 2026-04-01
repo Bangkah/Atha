@@ -20,6 +20,9 @@ Install ATHA using your preferred AUR helper:
 yay -S atha
 ```
 
+Note:
+- Do not run AUR helpers as root.
+
 ## One-Line Installer (curl)
 
 ```bash
@@ -42,6 +45,7 @@ atha doctor
 Expected result:
 - `atha --help` prints the command reference.
 - `atha doctor` reports whether required system dependencies are available.
+- `atha install --plan vim` shows decision analysis output.
 
 ## Update ATHA
 

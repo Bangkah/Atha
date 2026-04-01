@@ -2,7 +2,7 @@
 
 This page tracks user-visible changes for ATHA releases.
 
-Latest release announcement: v2.2.3
+Latest release announcement: [v2.2.3](Release-Announcement-v2.2.3.md)
 
 ## v2.2.3 (2026-04-01)
 
@@ -13,6 +13,9 @@ Latest release announcement: v2.2.3
 ### Changed
 - Enforced behavioral split between `--plan` and `--dry-run` to reduce overlap and improve reviewer clarity.
 - Refined help and command documentation for consistency and operational readability.
+
+### Packaging
+- AUR release synchronized to `2.2.3-1`.
 
 ## v2.2.2 (2026-04-01)
 

@@ -6,10 +6,10 @@
 atha install [--dry-run] [--plan] [--yes] <pkg> [pkg2 ...]
 ```
 
-Installs one or more packages. ATHA builds a plan first, checks official repositories, and falls back to AUR when required.
+Installs one or more packages. ATHA evaluates official repositories first and falls back to AUR when needed.
 
-- `--plan` is decision analysis mode: shows install decisions with reasons, source selection, transaction simulation, and AUR reachability checks.
-- `--dry-run` is execution simulation mode: shows exact commands that would run without modifying the system.
+- `--plan` performs decision analysis: what will be installed, from where, and why.
+- `--dry-run` performs execution simulation: which commands would run, without applying changes.
 
 ## remove
 
@@ -19,8 +19,8 @@ atha remove [--dry-run|--plan] [--yes] <pkg> [pkg2 ...]
 
 Removes one or more installed packages.
 
-- `--plan` shows remove decisions with reasons and transaction impact simulation.
-- `--dry-run` shows exact remove commands that would execute and skips missing packages.
+- `--plan` explains removal decisions and expected impact.
+- `--dry-run` previews remove commands and skips non-installed targets.
 
 ## search
 
@@ -38,8 +38,8 @@ atha update [--dry-run|--plan]
 
 Runs a full system upgrade via pacman.
 
-- `--plan` is decision analysis mode: shows which updates are available and why.
-- `--dry-run` is execution simulation mode: shows update list and exact update command.
+- `--plan` shows update availability and reasoning-oriented summary.
+- `--dry-run` previews update commands without modifying the system.
 
 ## list
 
@@ -88,5 +88,5 @@ Shows recent ATHA operations from local history state.
 
 - Commands that modify system packages may require sudo privileges.
 - AUR operations require build tooling such as `git` and `makepkg`.
-- Use `--dry-run` on install, remove, and update for safe previews.
-- Use `--plan` to inspect planned actions before execution.
+- Use `--plan` when you want analysis and decision context.
+- Use `--dry-run` when you want execution preview only.

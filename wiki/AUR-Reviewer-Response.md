@@ -14,7 +14,7 @@ I agree that tools in AUR should provide clear value beyond simply wrapping exis
 
 ATHA preserves native pacman behavior while improving safety, transparency, and usability for daily workflows.
 
-I will continue maintaining the package and iterating based on technical feedback. If there are specific concerns regarding implementation quality or redundancy, I am happy to address them with concrete improvements.
+I will continue maintaining the package and iterating based on technical feedback. If there are specific concerns regarding implementation quality or redundancy, I am happy to address them with concrete improvements and follow-up releases.
 
 Thank you again for your time and review.
 
