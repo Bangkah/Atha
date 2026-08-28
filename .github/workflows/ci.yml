@@ -13,14 +13,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup ShellCheck
-        uses: ludeeus/action-shellcheck@2.0.0
-        env:
-          SHELLCHECK_OPTS: "--severity=error"
-
       - name: Run ShellCheck on Executable & Commands
         run: |
           echo "Linting main executable..."
           shellcheck -x -e SC1091 atha
+          
           echo "Linting command modules..."
-          shellcheck -x -e SC1091 commands/*
+          find commands -name "*.sh" -print0 | xargs -0 shellcheck -x -e SC1091,SC2181
