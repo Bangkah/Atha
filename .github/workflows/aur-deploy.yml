@@ -12,6 +12,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install pacman-contrib
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pacman-package-manager || true
+
       - name: Setup SSH for AUR
         run: |
           mkdir -p ~/.ssh
@@ -24,21 +29,29 @@ jobs:
           git config --global user.name "Bangkah"
           git config --global user.email "bangkah@aur.archlinux.org"
 
+          # Clone repo AUR
           git clone ssh://aur@aur.archlinux.org/atha.git ../aur-atha
           cp PKGBUILD ../aur-atha/PKGBUILD
           cd ../aur-atha
 
-          echo "pkgbase = atha" > .SRCINFO
-          echo "	pkgname = atha" >> .SRCINFO
-          grep -E "^pkgver=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
-          grep -E "^pkgrel=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
-          grep -E "^pkgdesc=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
-          grep -E "^url=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
-          grep -E "^arch=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
-          grep -E "^license=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
-          grep -E "^depends=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
-          grep -E "^source=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
-          grep -E "^sha256sums=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
+          cat << 'EOF' > .SRCINFO
+          pkgbase = atha
+          	pkgdesc = Simple and fast Arch Linux package manager wrapper built on top of pacman
+          	pkgver = 2.2.3
+          	pkgrel = 1
+          	url = https://github.com/Bangkah/Atha
+          	arch = any
+          	license = MIT
+          	depends = bash
+          	depends = pacman
+          	depends = sudo
+          	depends = git
+          	depends = base-devel
+          	source = atha-2.2.3.tar.gz::https://github.com/Bangkah/Atha/archive/refs/tags/v2.2.3.tar.gz
+          	sha256sums = SKIP
+
+          pkgname = atha
+          EOF
 
           git add PKGBUILD .SRCINFO
           if git diff --cached --quiet; then
