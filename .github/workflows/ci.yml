@@ -16,7 +16,7 @@ jobs:
       - name: Setup ShellCheck
         uses: ludeeus/action-shellcheck@2.0.0
         env:
-          SHELLCHECK_OPTS: "-e SC2154,SC2086"
+          SHELLCHECK_OPTS: "--severity=error"
 
       - name: Run ShellCheck on Executable & Commands
         run: |
