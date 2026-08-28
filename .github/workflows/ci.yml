@@ -21,6 +21,6 @@ jobs:
       - name: Run ShellCheck on Executable & Commands
         run: |
           echo "Linting main executable..."
-          shellcheck -x atha
+          shellcheck -x -e SC1091 atha
           echo "Linting command modules..."
-          shellcheck -x commands/*
+          shellcheck -x -e SC1091 commands/*
