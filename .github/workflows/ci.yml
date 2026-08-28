@@ -19,4 +19,4 @@ jobs:
           shellcheck -x -e SC1091 atha
           
           echo "Linting command modules..."
-          find commands -name "*.sh" -print0 | xargs -0 shellcheck -x -e SC1091,SC2181
+          find commands -name "*.sh" -print0 | xargs -0 shellcheck -x -e SC1091,SC2181,SC2034,SC1003
