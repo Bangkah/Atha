@@ -3,7 +3,7 @@ name: Publish to AUR
 on:
   push:
     tags:
-      - 'v*' 
+      - 'v*'
 
 jobs:
   aur-publish:
@@ -20,5 +20,6 @@ jobs:
           commit_username: 'Bangkah'
           commit_email: 'bangkah@aur.archlinux.org'
           ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          ssh_keyscan_types: 'ed25519,rsa'
           commit_message: "Update to ${{ github.ref_name }}"
           force_push: false
