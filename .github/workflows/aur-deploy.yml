@@ -12,14 +12,39 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Publish to AUR
-        uses: KSXGitHub/github-actions-deploy-aur@v2.7.0
-        with:
-          pkgname: atha
-          pkgbuild: ./PKGBUILD
-          commit_username: 'Bangkah'
-          commit_email: 'bangkah@aur.archlinux.org'
-          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-          ssh_keyscan_types: 'ed25519,rsa'
-          commit_message: "Update to ${{ github.ref_name }}"
-          force_push: false
+      - name: Setup SSH for AUR
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AUR_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -t ed25519,rsa aur.archlinux.org >> ~/.ssh/known_hosts
+
+      - name: Clone AUR Repo & Sync PKGBUILD
+        run: |
+          git config --global user.name "Bangkah"
+          git config --global user.email "bangkah@aur.archlinux.org"
+
+          git clone ssh://aur@aur.archlinux.org/atha.git ../aur-atha
+
+          cp PKGBUILD ../aur-atha/PKGBUILD
+          cd ../aur-atha
+
+          echo "pkgbase = atha" > .SRCINFO
+          echo "	pkgname = atha" >> .SRCINFO
+          grep -E "^pkgver=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
+          grep -E "^pkgrel=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
+          grep -E "^pkgdesc=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
+          grep -E "^url=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
+          grep -E "^arch=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
+          grep -E "^license=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
+          grep -E "^depends=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
+          grep -E "^source=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
+          grep -E "^sha256sums=" PKGBUILD | sed 's/^/	/' >> .SRCINFO
+
+          git add PKGBUILD .SRCINFO
+          if git diff --cached --quiet; then
+            echo "Tidak ada perubahan berkas."
+          else
+            git commit -m "Update to ${{ github.ref_name }}"
+            git push origin master
+          fi
