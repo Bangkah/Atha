@@ -15,7 +15,7 @@ jobs:
       - name: Install pacman and makepkg
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-exec makepkg pacman-package-manager
+          sudo apt-get install -y build-essential makepkg pacman-package-manager
 
       - name: Setup SSH for AUR
         env:
@@ -39,21 +39,16 @@ jobs:
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
           
-          # Update PKGBUILD version dynamically from tag if needed, or ensure it matches
           sed -i "s/^pkgver=.*/pkgver=$VERSION/" PKGBUILD
           sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
           
-          # Generate .SRCINFO locally using makepkg
           makepkg --printsrcinfo > .SRCINFO
           
-          # Clone AUR repository
           git clone ssh://aur@aur.archlinux.org/atha.git ../aur-atha
           
-          # Copy updated files
           cp PKGBUILD ../aur-atha/
           cp .SRCINFO ../aur-atha/
           
-          # Push to AUR
           cd ../aur-atha
           git add PKGBUILD .SRCINFO
           git commit -m "maint: release version $VERSION" || echo "No changes to commit"
