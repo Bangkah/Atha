@@ -17,7 +17,7 @@ validate_package_name() {
         die "Package name tidak boleh kosong"
     fi
     
-    if ! [[ $pkg =~ ^[a-zA-Z0-9._\-+@]+$ ]]; then
+    if ! [[ $pkg =~ ^[a-zA-Z0-9._+@-]+$ ]]; then
         die "Invalid package name: $pkg"
     fi
     
