@@ -47,7 +47,6 @@ init_state_dir() {
     STATE_READY=1
 }
 
-# Check if running as root
 is_root() {
     if [ "$EUID" -ne 0 ]; then
         return 1
@@ -55,65 +54,62 @@ is_root() {
     return 0
 }
 
-# Check if package exists in repo
 package_exists() {
     local pkg=$1
     pacman -Ss "^$pkg$" &>/dev/null
     return $?
 }
 
-# Print success message
 print_success() {
-    echo -e "${GREEN}[atha] ✅ $1${RESET}"
+    printf "%b\n" "${GREEN}[atha] ✅ $1${RESET}"
 }
 
-# Print error message
 print_error() {
-    echo -e "${RED}[atha] ❌ $1${RESET}"
+    printf "%b\n" "${RED}[atha] ❌ $1${RESET}"
 }
 
-# Print info message
 print_info() {
-    echo -e "${BLUE}[atha] ℹ️  $1${RESET}"
+    printf "%b\n" "${BLUE}[atha] ℹ️  $1${RESET}"
 }
 
-# Print warning message
 print_warning() {
-    echo -e "${YELLOW}[atha] ⚠️  $1${RESET}"
+    printf "%b\n" "${YELLOW}[atha] ⚠️  $1${RESET}"
 }
 
-# Print processing message
 print_processing() {
-    echo -e "${BLUE}[atha] 🔄 $1${RESET}"
+    printf "%b\n" "${BLUE}[atha] 🔄 $1${RESET}"
 }
 
-# Print section header
 print_section() {
     echo ""
-    echo -e "${BLUE}==> $1${RESET}"
+    printf "%b\n" "${BLUE}==> $1${RESET}"
 }
 
-# Format bytes into human-readable units
 format_bytes() {
     local bytes=$1
-    local unit=(B KiB MiB GiB TiB)
-    local i=0
-    local value="$bytes"
 
     if ! [[ "$bytes" =~ ^[0-9]+$ ]]; then
         echo "$bytes"
         return
     fi
 
-    while [ "$value" -ge 1024 ] && [ $i -lt 4 ]; do
-        value=$((value / 1024))
-        i=$((i + 1))
-    done
-
-    echo "$value ${unit[$i]}"
+    awk -v bytes="$bytes" '
+    BEGIN {
+        split("B KiB MiB GiB TiB", unit)
+        i = 1
+        val = bytes
+        while (val >= 1024 && i < 5) {
+            val /= 1024
+            i++
+        }
+        if (i == 1) {
+            printf "%d %s", val, unit[i]
+        } else {
+            printf "%.2f %s", val, unit[i]
+        }
+    }'
 }
 
-# Write log line to log file
 log() {
     local message=$1
     if [ "$LOG_READY" -ne 1 ]; then
@@ -142,11 +138,8 @@ record_history() {
         "$detail" >> "$HISTORY_FILE" 2>/dev/null || true
 }
 
-# Exit with error
 die() {
     log "ERROR: $1"
     print_error "$1"
     exit 1
 }
-
-export -f init_state_dir is_root package_exists print_success print_error print_info print_warning print_processing print_section format_bytes log record_history die

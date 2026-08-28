@@ -6,12 +6,13 @@
 source "$(dirname "$0")/lib/colors.sh"
 source "$(dirname "$0")/lib/utils.sh"
 source "$(dirname "$0")/lib/validators.sh"
-source "$(dirname "$0")/lib/progress.sh"
 
 validate_command pacman
 
 dry_run=0
 plan_only=0
+auto_yes=0
+
 while [ $# -gt 0 ]; do
     case "$1" in
         --dry-run)
@@ -20,6 +21,9 @@ while [ $# -gt 0 ]; do
         --plan)
             dry_run=1
             plan_only=1
+            ;;
+        --yes)
+            auto_yes=1
             ;;
         --*)
             die "Unknown option: $1"
@@ -36,6 +40,11 @@ print_processing "Updating system"
 log "System update requested"
 echo ""
 
+foreign_count="$(pacman -Qm 2>/dev/null | wc -l | tr -d ' ')"
+if [ -n "$foreign_count" ] && [ "$foreign_count" -gt 0 ]; then
+    print_info "Note: You have $foreign_count AUR/local package(s) installed. These must be updated separately."
+fi
+
 if [ "$dry_run" -eq 1 ]; then
     if [ "$plan_only" -eq 1 ]; then
         print_section "PLAN: Decision Analysis"
@@ -50,6 +59,7 @@ if [ "$dry_run" -eq 1 ]; then
     if command -v checkupdates >/dev/null 2>&1; then
         updates_output="$(checkupdates 2>/dev/null || true)"
     else
+        print_warning "'checkupdates' not found (install pacman-contrib). Falling back to local db check (pacman -Qu)."
         updates_output="$(pacman -Qu 2>/dev/null || true)"
     fi
 
@@ -77,8 +87,11 @@ if [ "$dry_run" -eq 1 ]; then
     fi
 
     run_cmd="sudo pacman -Syu"
+    if [ "$auto_yes" -eq 1 ]; then
+        run_cmd="$run_cmd --noconfirm"
+    fi
     if is_root; then
-        run_cmd="pacman -Syu"
+        run_cmd="${run_cmd/sudo /}"
     fi
     print_info "Would execute: $run_cmd"
 
@@ -87,6 +100,7 @@ if [ "$dry_run" -eq 1 ]; then
         mode_label="plan"
     fi
     record_history "update" "system" "official" "planned" "$mode_label count=$updates_count"
+    
     if [ "$plan_only" -eq 1 ]; then
         print_success "Plan completed (no changes applied)"
     else
@@ -95,7 +109,6 @@ if [ "$dry_run" -eq 1 ]; then
     exit 0
 fi
 
-# Check privileges and run update
 if is_root; then
     update_cmd=(pacman -Syu)
 else
@@ -103,18 +116,23 @@ else
     update_cmd=(sudo pacman -Syu)
 fi
 
-progress_bar
+if [ "$auto_yes" -eq 1 ]; then
+    update_cmd+=("--noconfirm")
+fi
 
-# Run system update
+echo ""
+print_processing "Starting pacman transaction..."
+
 "${update_cmd[@]}"
+rc=$?
 
-if [ $? -eq 0 ]; then
+if [ $rc -eq 0 ]; then
     log "System update success"
     record_history "update" "system" "official" "success" ""
     echo ""
     print_success "System updated successfully"
 else
-    log "System update failed"
+    log "System update failed (exit code: $rc)"
     record_history "update" "system" "official" "failed" "pacman-syu"
     die "System update failed"
 fi

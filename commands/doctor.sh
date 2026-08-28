@@ -17,9 +17,13 @@ warning_count=0
 check_path_writable() {
     local path=$1
     local label=$2
-    if [ -d "$path" ] && [ -w "$path" ]; then
-        print_success "$label writable: $path"
-    elif mkdir -p "$path" 2>/dev/null; then
+    local check_target="$path"
+
+    if [ ! -d "$path" ]; then
+        check_target="$(dirname "$path")"
+    fi
+
+    if [ -w "$check_target" ]; then
         print_success "$label writable: $path"
     else
         print_warning "$label not writable: $path"
@@ -29,11 +33,26 @@ check_path_writable() {
 
 check_host() {
     local host=$1
-    if getent hosts "$host" >/dev/null 2>&1; then
-        print_success "DNS reachable: $host"
+    local has_timeout=0
+
+    if command -v timeout >/dev/null 2>&1; then
+        has_timeout=1
+    fi
+
+    if [ "$has_timeout" -eq 1 ]; then
+        if timeout 2 getent hosts "$host" >/dev/null 2>&1; then
+            print_success "DNS reachable: $host"
+        else
+            print_warning "DNS unresolved: $host"
+            warning_count=$((warning_count + 1))
+        fi
     else
-        print_warning "DNS unresolved: $host"
-        warning_count=$((warning_count + 1))
+        if getent hosts "$host" >/dev/null 2>&1; then
+            print_success "DNS reachable: $host"
+        else
+            print_warning "DNS unresolved: $host"
+            warning_count=$((warning_count + 1))
+        fi
     fi
 }
 
@@ -49,6 +68,7 @@ check_cmd() {
     fi
 }
 
+print_section "Core tools check"
 check_cmd pacman
 check_cmd sudo
 check_cmd git

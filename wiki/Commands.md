@@ -1,92 +1,116 @@
-# Commands
+# Command Reference
+
+ATHA wraps standard `pacman` and AUR commands into intuitive, readable workflows. 
 
 ## install
 
 ```bash
 atha install [--dry-run] [--plan] [--yes] <pkg> [pkg2 ...]
+
 ```
 
-Installs one or more packages. ATHA evaluates official repositories first and falls back to AUR when needed.
+Installs one or more packages. ATHA evaluates official repositories first, groups them into a single efficient batch transaction, and seamlessly falls back to AUR compilation when needed.
 
-- `--plan` performs decision analysis: what will be installed, from where, and why.
-- `--dry-run` performs execution simulation: which commands would run, without applying changes.
+* `--plan`: Performs decision analysis (what will be installed, from where, dependency impact, and download size) without applying changes.
+* `--dry-run`: Previews the exact underlying commands that would run.
+* `--yes`: Skips interactive confirmation prompts (passes `--noconfirm` to `pacman`).
 
 ## remove
 
 ```bash
 atha remove [--dry-run|--plan] [--yes] <pkg> [pkg2 ...]
+
 ```
 
-Removes one or more installed packages.
+Removes one or more installed packages. Under the hood, ATHA uses `pacman -Rns` to cleanly remove the target packages along with their unneeded dependencies (orphans) and configuration files.
 
-- `--plan` explains removal decisions and expected impact.
-- `--dry-run` previews remove commands and skips non-installed targets.
+* `--plan`: Explains removal decisions and calculates the estimated storage space that will be freed.
+* `--dry-run`: Previews remove commands and automatically skips non-installed targets.
+* `--yes`: Skips interactive confirmation prompts.
 
 ## search
 
 ```bash
 atha search <keyword>
+
 ```
 
-Searches packages by keyword using pacman.
+Searches for packages by keyword.
+ATHA queries the official repositories first. If no results are found, it automatically queries the AUR via RPC API.
 
 ## update
 
 ```bash
-atha update [--dry-run|--plan]
+atha update [--dry-run|--plan] [--yes]
+
 ```
 
-Runs a full system upgrade via pacman.
+Runs a full system upgrade for official repository packages.
 
-- `--plan` shows update availability and reasoning-oriented summary.
-- `--dry-run` previews update commands without modifying the system.
+* `--plan`: Safely checks for updates using `checkupdates` (preventing partial upgrade risks) and displays a reasoning-oriented summary. Also warns about outdated AUR/local packages.
+* `--dry-run`: Previews update commands without modifying the system.
+* `--yes`: Skips interactive confirmation prompts.
 
 ## list
 
 ```bash
-atha list [installed|all]
+atha list [installed|explicit|aur|all] [--limit N]
+
 ```
 
-Shows installed packages or a limited list of all available packages.
+Lists packages available or currently installed on the system.
+
+* `installed`: All packages currently on the system (default).
+* `explicit`: Packages manually installed by the user.
+* `aur`: Foreign packages installed from the AUR.
+* `all`: Available packages in the repositories (requires `--limit`).
+* `--limit N`: Restricts the output to *N* lines for readability.
 
 ## info
 
 ```bash
 atha info <pkg>
+
 ```
 
-Displays package metadata from repositories.
+Displays detailed package metadata. ATHA checks the official sync database first, falls back to the local database, and finally queries the AUR RPC API if the package is foreign.
 
 ## doctor
 
 ```bash
 atha doctor
+
 ```
 
-Checks required dependencies and returns non-zero exit code when required tools are missing.
+Diagnoses your ATHA and system environment health. Exits with a non-zero code when critical tools are missing.
 
-Doctor also checks runtime readiness:
+Doctor checks runtime readiness:
 
-- pacman lock state
-- writable cache/state paths
-- DNS reachability for archlinux.org and aur.archlinux.org
+* Required dependencies (`pacman`, `git`, `sudo`, `makepkg`).
+* Stale `pacman` database lock state (`/var/lib/pacman/db.lck`).
+* Writable cache and state directory paths.
+* DNS reachability for `archlinux.org` and `aur.archlinux.org`.
 
 ## history
 
 ```bash
 atha history [--limit N] [--full|--timeline|--summary] [--action <name>] [--status <name>]
+
 ```
 
-Shows recent ATHA operations from local history state.
+Shows recent ATHA operations from the local history state.
 
-- `--timeline` prints concise chronological events.
-- `--summary` prints counts by action and status.
-- `--action` filters events by action (`install`, `remove`, `update`).
-- `--status` filters events by status (`success`, `failed`, `planned`, `cancelled`, `skipped`).
+* `--timeline`: Prints concise, chronological events.
+* `--summary`: Prints aggregated counts by action and status.
+* `--action`: Filters events by action (`install`, `remove`, `update`).
+* `--status`: Filters events by status (`success`, `failed`, `planned`, `cancelled`, `skipped`).
+* `--limit N`: Limits the output to the most recent *N* matched entries (default: 20).
 
-## Notes
+## Operational Notes
 
-- Commands that modify system packages may require sudo privileges.
-- AUR operations require build tooling such as `git` and `makepkg`.
-- Use `--plan` when you want analysis and decision context.
-- Use `--dry-run` when you want execution preview only.
+* Commands that modify system packages require `sudo` privileges (ATHA handles privilege escalation natively).
+* AUR build operations require `base-devel`, `git`, and `makepkg`.
+* AUR metadata fetching (`search` and `info`) requires `curl` and `jq`.
+* Safe update planning requires `pacman-contrib`.
+* Use `--plan` when you want analysis, decision context, and size estimations.
+* Use `--dry-run` when you strictly want an execution preview.

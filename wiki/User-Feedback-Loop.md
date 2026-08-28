@@ -1,65 +1,62 @@
 # User Feedback Loop
 
-This page defines how ATHA collects, evaluates, and ships user feedback.
+This page defines how ATHA collects, evaluates, and integrates user feedback. 
 
 ## Purpose
 
-ATHA is maintained as a safety and workflow layer for pacman. The feedback loop ensures updates are driven by real user workflows and technical evidence.
+ATHA is maintained as a safety and workflow layer for `pacman`. The feedback loop ensures that future updates, bug fixes, and feature additions are driven by real user workflows and solid technical evidence.
 
 ## Loop Stages
 
-1. Capture
-- Collect feedback from GitHub issues, AUR comments, and direct user reports.
-
-2. Reproduce
-- Reproduce the issue using the same commands and environment details.
-- Confirm expected behavior versus actual behavior.
-
-3. Classify
-- Safety: risks, unintended package changes, confirmation flow problems.
-- Transparency: unclear output, missing plan details, weak status signaling.
-- Auditability: missing history entries, weak traceability, unclear logs.
-
-4. Prioritize
-- High: data/system risk, failed package operations, broken critical command.
-- Medium: degraded UX, confusing output, non-blocking workflow defects.
-- Low: wording, formatting, minor documentation gaps.
-
-5. Ship
-- Implement focused fixes in small releases.
-- Document changes in [Release Notes](Release-Notes.md).
-- Validate with the original reproduction steps.
+1. **Capture**
+   - Collect feedback from GitHub issues, AUR package comments, and direct user reports.
+2. **Reproduce**
+   - Replicate the issue using the provided commands and environment details.
+   - Confirm expected behavior versus actual behavior.
+3. **Classify**
+   - **Safety:** Risks to system stability, unintended package changes, or confirmation flow bypasses.
+   - **Transparency:** Unclear output, missing `--plan` details, or weak status signaling.
+   - **Auditability:** Missing history entries, weak traceability, or corrupted logs.
+4. **Prioritize**
+   - **High:** Data/system risk, failed core package operations, broken critical commands (e.g., `update` failing).
+   - **Medium:** Degraded UX, confusing output, non-blocking workflow defects.
+   - **Low:** Wording, text formatting, or minor documentation gaps.
+5. **Ship**
+   - Implement focused fixes in small, iterative releases.
+   - Document changes comprehensively in the [Release Notes](Release-Notes.md).
+   - Validate the fix against the original reproduction steps.
 
 ## Feedback Submission Template
 
-When reporting an issue, include the following:
+When reporting an issue or requesting a feature, please include the following details to speed up the reproduction phase:
 
-- ATHA version (`atha --help` header)
-- Command used
-- Expected behavior
-- Actual behavior
-- Full relevant output or error
-- Environment details (Arch version, shell, terminal)
+- **ATHA version** (Check the header of `atha --help`)
+- **Command used**
+- **Expected behavior**
+- **Actual behavior**
+- **Full relevant output or error**
+- **Environment details** (OS, shell, terminal)
 
-Example:
-
+**Example:**
 ```text
-Version: ATHA v2.2.0
+Version: ATHA v2.2.3
 Command: atha install --plan vim
-Expected: dependency and size preview
-Actual: missing size section
-Output: <paste output>
-Environment: Arch Linux, bash 5.x, Alacritty
+Expected: Dependency impact and download size preview
+Actual: Missing download size section for official packages
+Output: <paste terminal output here>
+Environment: Garuda Linux, bash 5.2, Alacritty
+
 ```
 
 ## Feedback Channels
 
-- GitHub Issues: https://github.com/Bangkah/Atha/issues
-- AUR package comments: https://aur.archlinux.org/packages/atha
+* **GitHub Issues:** [github.com/Bangkah/Atha/issues](https://github.com/Bangkah/Atha/issues)
+* **AUR Package Comments:** [aur.archlinux.org/packages/atha](https://aur.archlinux.org/packages/atha)
 
 ## Maintainer Response Policy
 
-- Keep responses technical, concise, and respectful.
-- Confirm reproduction status first.
-- Provide ETA only when scope is understood.
-- Close feedback with release reference once shipped.
+* Keep responses technical, concise, and respectful.
+* Confirm the reproduction status before suggesting workarounds.
+* Provide an ETA only when the scope of the fix is fully understood.
+* Close the feedback loop or issue with a direct reference to the release version once shipped.
+

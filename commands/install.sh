@@ -207,38 +207,56 @@ if [ "$auto_yes" -ne 1 ]; then
     fi
 fi
 
-for pkg in "${packages[@]}"; do
-    log "Install requested for package: $pkg"
-
-    if pacman -Qi "$pkg" &>/dev/null; then
-        print_warning "$pkg already installed"
+for line in "${plan_lines[@]}"; do
+    IFS='|' read -r pkg action source reason <<< "$line"
+    if [ "$action" = "skip" ]; then
         log "Skip install (already installed): $pkg"
-        record_history "install" "$pkg" "installed" "skipped" "already-installed"
-        continue
+        record_history "install" "$pkg" "$source" "skipped" "already-installed"
+    fi
+done
+
+if [ ${#official_targets[@]} -gt 0 ]; then
+    print_processing "Installing official packages: ${official_targets[*]}"
+    log "Executing batch install for official packages: ${official_targets[*]}"
+    progress_bar
+
+    validate_sudo
+    
+    pacman_flags=("-S" "--needed")
+    if [ "$auto_yes" -eq 1 ]; then
+        pacman_flags+=("--noconfirm")
     fi
 
-    if pacman -Si "$pkg" &>/dev/null; then
-        print_processing "Installing $pkg from official repository"
-        log "Source detected for $pkg: official"
-        progress_bar
-
-        validate_sudo
-        sudo pacman -S "$pkg"
-        rc=$?
-        source_type="official"
+    if sudo pacman "${pacman_flags[@]}" "${official_targets[@]}"; then
+        for pkg in "${official_targets[@]}"; do
+            print_success "$pkg installed"
+            log "Install success: $pkg"
+            record_history "install" "$pkg" "official" "success" ""
+        done
     else
+        for pkg in "${official_targets[@]}"; do
+            log "Install failed: $pkg"
+            record_history "install" "$pkg" "official" "failed" "pacman batch failure"
+        done
+        die "Failed to install official packages"
+    fi
+fi
+
+if [ ${#aur_targets[@]} -gt 0 ]; then
+    validate_command git
+    validate_command makepkg
+
+    for pkg in "${aur_targets[@]}"; do
         print_processing "Installing $pkg from AUR"
         log "Source detected for $pkg: aur"
         progress_bar
-
-        validate_command git
-        validate_command makepkg
 
         build_dir="$(mktemp -d "/tmp/atha-${pkg}-XXXXXX")"
         current_build_dir="$build_dir"
         log "AUR build directory: $build_dir"
 
         if ! git clone "https://aur.archlinux.org/${pkg}.git" "$build_dir/$pkg"; then
+            record_history "install" "$pkg" "aur" "failed" "git clone failed"
             die "Failed to clone AUR package: $pkg"
         fi
 
@@ -247,22 +265,21 @@ for pkg in "${packages[@]}"; do
             makepkg -si --noconfirm
         )
         rc=$?
-        source_type="aur"
 
         rm -rf "$build_dir"
         current_build_dir=""
-    fi
 
-    if [ $rc -eq 0 ]; then
-        print_success "$pkg installed"
-        log "Install success: $pkg"
-        record_history "install" "$pkg" "$source_type" "success" ""
-    else
-        log "Install failed: $pkg"
-        record_history "install" "$pkg" "$source_type" "failed" "exit=$rc"
-        die "Failed install $pkg"
-    fi
-done
+        if [ $rc -eq 0 ]; then
+            print_success "$pkg installed"
+            log "Install success: $pkg"
+            record_history "install" "$pkg" "aur" "success" ""
+        else
+            log "Install failed: $pkg"
+            record_history "install" "$pkg" "aur" "failed" "exit=$rc"
+            die "Failed install $pkg"
+        fi
+    done
+fi
 
 echo ""
 print_success "Install process completed"
