@@ -67,15 +67,15 @@ Daily package operations are often too opaque for routine use. ATHA addresses th
 You can install ATHA using your favorite AUR helper:
 ```bash
 yay -S atha
-
 ```
+![alt text](image.png)
 
 ### One-line Installer (curl)
 
 ```bash
-curl -fsSL [https://raw.githubusercontent.com/Bangkah/Atha/main/install.sh](https://raw.githubusercontent.com/Bangkah/Atha/main/install.sh) | bash
-
+curl -fsSL https://raw.githubusercontent.com/Bangkah/Atha/main/install.sh | bash
 ```
+![alt text]({5D27AE31-F95F-4ED8-9CE5-C03432423EE1}.png)
 
 ## Quick Start
 
@@ -83,30 +83,31 @@ Verify your environment health:
 
 ```bash
 atha doctor
-
 ```
+![alt text]({A19EDF54-359B-41A7-AD9E-2B22D4343AAF}.png)
 
 Simulate an installation without making changes:
 
 ```bash
 atha install --plan neovim
 atha install --dry-run neovim
-
 ```
+![alt text]({EE866489-4A32-46F0-92B4-6ED7BB4D10B4}.png)
+![alt text]({7EE36E40-6320-47FD-B44E-4C55D98B6E2D}.png)
 
 Check system updates safely:
 
 ```bash
 atha update --plan
-
 ```
+![alt text]({81ACD0EE-D56A-425F-8F4E-D9DD2E77B9DE}.png)
 
 Audit your recent package transactions:
 
 ```bash
 atha history --timeline --limit 20
-
 ```
+![alt text]({42D36C22-6743-4F36-831A-AE4419B2AF90}.png)
 
 ## Command Reference
 
