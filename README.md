@@ -1,176 +1,179 @@
 # ATHA
 
-![ATHA Logo](assets/branding/atha-logo.svg)
+<div align="center">
+  <img src="assets/branding/atha-logo.svg" alt="ATHA Logo" width="400"/>
+</div>
 
-[![AUR version](https://img.shields.io/aur/version/atha)](https://aur.archlinux.org/packages/atha)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+<p align="center">
+  <a href="https://aur.archlinux.org/packages/atha"><img src="https://img.shields.io/aur/version/atha?color=1793d1&style=flat-square&logo=arch-linux" alt="AUR version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License: MIT"></a>
+  <a href="https://github.com/Bangkah/Atha"><img src="https://img.shields.io/github/stars/Bangkah/Atha?style=flat-square" alt="GitHub Stars"></a>
+</p>
 
-ATHA is a safety and workflow layer for pacman on Arch Linux.
+**ATHA** is a safety and workflow layer for `pacman` on Arch Linux. 
 
-It is designed to improve package-operation safety, decision transparency, and operational auditability while preserving native Arch behavior.
+It is designed to improve package-operation safety, decision transparency, and operational auditability while seamlessly preserving native Arch Linux behavior.
+
+---
 
 ## Project Identity
 
-ATHA is not a pacman replacement and not a yay clone.
+ATHA is **not** a `pacman` replacement, nor is it a `yay` clone. 
 
 ATHA focuses on:
+- **Safer package workflows** before execution.
+- **Clearer operational decisions** and execution previews.
+- **Local history logging** for post-operation auditing.
 
-- safer package workflows before execution
-- clearer operational decisions and execution previews
-- local history for post-operation auditing
+Daily package operations are often too opaque for routine use. ATHA addresses this by making package workflows explicit before execution, traceable afterward, and consistent across commands.
 
 ## Core Pillars
 
-1. Safety
-- Execution simulation with dry-run mode
-- Confirmation layer for package-changing operations
-
-2. Transparency
-- Decision analysis with plan mode
-- Source selection visibility (official, AUR, skip)
-- Transaction simulation for install planning
-
-3. Auditability
-- Structured local history
-- Timeline and summary views
-- Action and status filtering
-
-## Why ATHA Exists
-
-Daily package operations are often too opaque for routine use.
-
-ATHA addresses this by making package workflows explicit before execution, traceable afterward, and consistent across commands.
+1. **Safety**
+   - Execution simulation via `--dry-run` mode.
+   - Confirmation layer for all package-changing operations.
+2. **Transparency**
+   - Decision analysis via `--plan` mode.
+   - Source selection visibility (Official Repositories vs. AUR).
+   - Detailed transaction simulation (download sizes & dependencies) prior to installation.
+3. **Auditability**
+   - Structured local history of all transactions.
+   - Timeline and summary views for system auditing.
+   - Action and status filtering.
 
 ## Feature Comparison
 
-| Feature | pacman | yay | ATHA |
-| --- | --- | --- | --- |
-| Workflow-level dry-run | No | Limited | Yes |
-| Decision plan mode | No | Limited | Yes |
-| Plan explanation layer | No | No | Yes |
-| Install transaction simulation | No | No | Yes |
-| Local operation timeline | No | No | Yes |
-| History summary and filters | No | No | Yes |
-| Built-in environment doctor | No | No | Yes |
+| Feature | `pacman` | `yay` | **ATHA** |
+| :--- | :---: | :---: | :---: |
+| Workflow-level dry-run | ❌ | Limited | ✅ |
+| Decision plan mode | ❌ | Limited | ✅ |
+| Plan explanation layer | ❌ | ❌ | ✅ |
+| Install transaction simulation | ❌ | ❌ | ✅ |
+| Local operation timeline | ❌ | ❌ | ✅ |
+| History summary & filters | ❌ | ❌ | ✅ |
+| Built-in environment doctor | ❌ | ❌ | ✅ |
 
 ## Requirements
 
 - Arch Linux
-- bash
-- pacman
-- sudo
-- git (for AUR fallback)
-- makepkg and base-devel (for AUR builds)
+- `bash`, `pacman`, `sudo`
+- `git` & `base-devel` *(Standard requirements for AUR builds)*
+- `curl` & `jq` *(For AUR RPC API fallback)*
+- `pacman-contrib` *(For safe system update checks)*
 
 ## Installation
 
-### AUR (recommended)
-
+### Arch User Repository (Recommended)
+You can install ATHA using your favorite AUR helper:
 ```bash
 yay -S atha
+
 ```
 
-### One-line installer (curl)
+### One-line Installer (curl)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Bangkah/Atha/main/install.sh | bash
-```
+curl -fsSL [https://raw.githubusercontent.com/Bangkah/Atha/main/install.sh](https://raw.githubusercontent.com/Bangkah/Atha/main/install.sh) | bash
 
-### One-line installer (wget)
-
-```bash
-wget -qO- https://raw.githubusercontent.com/Bangkah/Atha/main/install.sh | bash
 ```
 
 ## Quick Start
 
+Verify your environment health:
+
 ```bash
 atha doctor
-atha install --plan vim
-atha install --dry-run vim
+
+```
+
+Simulate an installation without making changes:
+
+```bash
+atha install --plan neovim
+atha install --dry-run neovim
+
+```
+
+Check system updates safely:
+
+```bash
 atha update --plan
+
+```
+
+Audit your recent package transactions:
+
+```bash
 atha history --timeline --limit 20
+
 ```
 
 ## Command Reference
 
 ```bash
 atha install [--plan|--dry-run] [--yes] <pkg> [pkg2 ...]
-atha remove [--plan|--dry-run] [--yes] <pkg> [pkg2 ...]
-atha search <keyword>
-atha update [--plan|--dry-run]
-atha list [installed|all]
-atha info <pkg>
+atha remove  [--plan|--dry-run] [--yes] <pkg> [pkg2 ...]
+atha search  <keyword>
+atha update  [--plan|--dry-run] [--yes]
+atha list    [installed|explicit|aur|all] [--limit N]
+atha info    <pkg>
 atha doctor
 atha history [--limit N] [--full|--timeline|--summary] [--action NAME] [--status NAME]
 atha --help
+
 ```
 
-Mode definitions:
+**Mode Definitions:**
 
-- plan: decision analysis (what will happen and why)
-- dry-run: execution simulation (what would run)
-- yes: skip confirmation prompts when supported
+* `--plan`: Decision analysis (explains *what* will happen and *why*).
+* `--dry-run`: Execution simulation (shows exactly *which* underlying commands would run).
+* `--yes`: Skips confirmation prompts for automated workflows.
 
 ## Operational Notes
 
-- install skips packages that are already installed
-- install falls back to AUR when package is not in official repositories
-- remove skips packages that are not installed
-- update plan and dry-run are non-destructive checks
-- doctor exits non-zero when required dependencies are missing
-- list all output is intentionally limited for readability
+* **Install:** Automatically skips packages that are already installed and falls back to the AUR when a package is missing from official repositories.
+* **Remove:** Uses `pacman -Rns` to cleanly remove packages along with their unneeded dependencies and configuration files. Skips packages that are not present.
+* **Search & Info:** Falls back to querying the AUR API if a package isn't found in the official sync database.
+* **Update:** `--plan` and `--dry-run` are non-destructive and utilize `checkupdates` to prevent partial upgrade issues.
+* **Doctor:** Exits with a non-zero code when critical dependencies are missing.
 
 ## Logs and History Paths
 
-Logs:
+**Logs (Debug Output):**
 
-- primary: /tmp/atha.log
-- fallback: $XDG_CACHE_HOME/atha/atha.log
-- fallback: ~/.cache/atha/atha.log
+* Primary: `/tmp/atha.log`
+* Fallback: `$XDG_CACHE_HOME/atha/atha.log`
 
-History:
+**History (Transaction Audit):**
 
-- $XDG_STATE_HOME/atha/history.log
-- ~/.local/state/atha/history.log
+* `$XDG_STATE_HOME/atha/history.log` (Defaults to `~/.local/state/atha/history.log`)
 
 ## Documentation
 
-- Wiki Home: [wiki/Home.md](wiki/Home.md)
-- Installation Guide: [wiki/Installation.md](wiki/Installation.md)
-- Command Reference: [wiki/Commands.md](wiki/Commands.md)
-- Troubleshooting: [wiki/Troubleshooting.md](wiki/Troubleshooting.md)
-- Release Notes: [wiki/Release-Notes.md](wiki/Release-Notes.md)
-- Release Announcement (v2.2.3): [wiki/Release-Announcement-v2.2.3.md](wiki/Release-Announcement-v2.2.3.md)
-- Brand Guidelines: [wiki/Brand-Guidelines.md](wiki/Brand-Guidelines.md)
-- User Feedback Loop: [wiki/User-Feedback-Loop.md](wiki/User-Feedback-Loop.md)
-- AUR Reviewer Response: [wiki/AUR-Reviewer-Response.md](wiki/AUR-Reviewer-Response.md)
+* [Wiki Home](https://www.google.com/search?q=wiki/Home.md)
+* [Installation Guide](https://www.google.com/search?q=wiki/Installation.md)
+* [Command Reference](https://www.google.com/search?q=wiki/Commands.md)
+* [Troubleshooting](https://www.google.com/search?q=wiki/Troubleshooting.md)
+* [Release Notes](https://www.google.com/search?q=wiki/Release-Notes.md)
+* [Brand Guidelines](https://www.google.com/search?q=wiki/Brand-Guidelines.md)
 
-## Project Links
+## Project Links & Maintainer
 
-- GitHub: https://github.com/Bangkah/Atha
-- AUR Package: https://aur.archlinux.org/packages/atha
-- Issue Tracker: https://github.com/Bangkah/Atha/issues
+* **Maintainer:** [Muhammad Dhiyaul Atha](https://mdhiyaulatha.me/) (Bangkah)
+* **GitHub Repository:** [Bangkah/Atha](https://github.com/Bangkah/Atha)
+* **AUR Package:** [aur.archlinux.org/packages/atha](https://aur.archlinux.org/packages/atha)
+* **Issue Tracker:** [Report a Bug or Request a Feature](https://github.com/Bangkah/Atha/issues)
 
 ## Branding Assets
 
-- Full logo: [assets/branding/atha-logo.svg](assets/branding/atha-logo.svg)
-- Full logo (dark): [assets/branding/atha-logo-dark.svg](assets/branding/atha-logo-dark.svg)
-- Full logo (light): [assets/branding/atha-logo-light.svg](assets/branding/atha-logo-light.svg)
-- Mark/icon: [assets/branding/atha-mark.svg](assets/branding/atha-mark.svg)
-- Avatar: [assets/branding/atha-avatar.svg](assets/branding/atha-avatar.svg)
-- Favicon: [assets/branding/atha-favicon.svg](assets/branding/atha-favicon.svg)
-- Social banner: [assets/branding/atha-banner.svg](assets/branding/atha-banner.svg)
+* Full logo: [Light](https://www.google.com/search?q=assets/branding/atha-logo-light.svg) | [Dark](https://www.google.com/search?q=assets/branding/atha-logo-dark.svg)
+* Mark/icon: [atha-mark.svg](https://www.google.com/search?q=assets/branding/atha-mark.svg)
+* Avatar: [atha-avatar.svg](https://www.google.com/search?q=assets/branding/atha-avatar.svg)
+* Social banner: [atha-banner.svg](https://www.google.com/search?q=assets/branding/atha-banner.svg)
 
-Optional PNG export on Arch Linux:
-
-```bash
-sudo pacman -S librsvg
-rsvg-convert -h 512 -w 512 assets/branding/atha-mark.svg > assets/branding/atha-mark-512.png
-rsvg-convert -h 512 -w 512 assets/branding/atha-avatar.svg > assets/branding/atha-avatar-512.png
-rsvg-convert -h 630 -w 1200 assets/branding/atha-banner.svg > assets/branding/atha-banner-1200x630.png
-```
+*(Optional PNG export script using `librsvg` is available in the branding folder).*
 
 ## License
 
-MIT License. See [LICENSE](LICENSE).
+This project is licensed under the MIT License. See [LICENSE](https://www.google.com/search?q=LICENSE) for details.
+

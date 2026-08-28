@@ -1,9 +1,15 @@
 #!/bin/bash
 
-# Source utils and colors
-source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
+# ATHA Validators Library
+if [ -n "${_ATHA_VALIDATORS_LOADED:-}" ]; then
+    return 0
+fi
+_ATHA_VALIDATORS_LOADED=1
 
-# Validate package name
+if ! command -v die &>/dev/null; then
+    source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
+fi
+
 validate_package_name() {
     local pkg=$1
     
@@ -11,15 +17,13 @@ validate_package_name() {
         die "Package name tidak boleh kosong"
     fi
     
-    # Allow alphanumeric, dash, underscore, dot
-    if ! [[ $pkg =~ ^[a-zA-Z0-9._-]+$ ]]; then
+    if ! [[ $pkg =~ ^[a-zA-Z0-9._\-+@]+$ ]]; then
         die "Invalid package name: $pkg"
     fi
     
     return 0
 }
 
-# Validate command exists
 validate_command() {
     local cmd=$1
     
@@ -30,7 +34,6 @@ validate_command() {
     return 0
 }
 
-# Check sudo availability
 validate_sudo() {
     if is_root; then
         return 0
@@ -47,5 +50,3 @@ validate_sudo() {
         fi
     fi
 }
-
-export -f validate_package_name validate_command validate_sudo

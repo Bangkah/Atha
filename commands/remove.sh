@@ -59,7 +59,6 @@ for pkg in "${packages[@]}"; do
     else
         missing_count=$((missing_count + 1))
         plan_lines+=("$pkg|skip|official|not installed")
-        record_history "remove" "$pkg" "official" "skipped" "not-installed"
     fi
 done
 
@@ -68,24 +67,27 @@ if [ ${#remove_targets[@]} -eq 0 ]; then
         print_section "PLAN: Decision Analysis"
         for line in "${plan_lines[@]}"; do
             IFS='|' read -r pkg action source reason <<< "$line"
-            if [ "$action" = "skip" ]; then
-                echo "  - $pkg -> skip"
-                echo "    reason: $reason"
-            else
-                echo "  - $pkg -> remove"
-                echo "    reason: $reason"
-            fi
+            echo "  - $pkg -> skip"
+            echo "    reason: $reason"
+            record_history "remove" "$pkg" "official" "skipped" "plan:$reason"
         done
         echo ""
         print_info "Summary: remove=$installed_count skip=$missing_count"
         print_success "Plan completed (no changes applied)"
     elif [ "$dry_run" -eq 1 ]; then
         print_section "DRY-RUN: Execution Simulation"
+        for line in "${plan_lines[@]}"; do
+            IFS='|' read -r pkg action source reason <<< "$line"
+            record_history "remove" "$pkg" "official" "skipped" "dry-run:$reason"
+        done
         print_info "No package changes will be applied"
         print_info "Execution summary: remove=$installed_count skip=$missing_count"
         print_success "Dry-run completed (no changes applied)"
     else
         print_section "Execution Plan"
+        for pkg in "${packages[@]}"; do
+            record_history "remove" "$pkg" "official" "skipped" "not-installed"
+        done
         print_info "Summary: remove=$installed_count skip=$missing_count"
         print_warning "Nothing to remove"
     fi
@@ -99,38 +101,38 @@ if [ "$plan_only" -eq 1 ]; then
         if [ "$action" = "skip" ]; then
             echo "  - $pkg -> skip"
             echo "    reason: $reason"
+            record_history "remove" "$pkg" "official" "skipped" "plan:$reason"
         else
             echo "  - $pkg -> remove"
             echo "    reason: $reason"
+            record_history "remove" "$pkg" "official" "planned" "plan:$reason"
         fi
     done
 
     print_section "PLAN: Transaction Impact"
 
-    tx_output="$(pacman -R --print --print-format '%n|%s' "${remove_targets[@]}" 2>/dev/null || true)"
+    tx_output="$(pacman -Rns --print --print-format '%n|%s' "${remove_targets[@]}" 2>/dev/null || true)"
     tx_total=0
 
     if [ -n "$tx_output" ]; then
-        print_info "Transaction impact (remove + dependency effects):"
+        print_info "Transaction impact (remove + unneeded dependencies):"
         while IFS='|' read -r tx_pkg tx_size; do
             [ -z "$tx_pkg" ] && continue
             echo "  - $tx_pkg ($(format_bytes "$tx_size"))"
             tx_total=$((tx_total + tx_size))
         done <<< "$tx_output"
-        print_info "Estimated transaction size impact: $(format_bytes "$tx_total")"
-    fi
-
-    for pkg in "${remove_targets[@]}"; do
-        if [ -z "$tx_output" ]; then
+        print_info "Estimated transaction size impact (freed space): $(format_bytes "$tx_total")"
+    else
+        for pkg in "${remove_targets[@]}"; do
             installed_size="$(pacman -Qi "$pkg" 2>/dev/null | awk -F': *' '/Installed Size/ {print $2; exit}')"
             if [ -n "$installed_size" ]; then
                 print_info "Estimated freed size for $pkg: $installed_size"
             else
                 print_warning "Unable to simulate remove dependency tree for $pkg"
             fi
-        fi
-        record_history "remove" "$pkg" "official" "planned" "plan:installed package"
-    done
+        done
+    fi
+
     echo ""
     print_info "Summary: remove=$installed_count skip=$missing_count"
     print_success "Plan completed (no changes applied)"
@@ -140,7 +142,7 @@ fi
 if [ "$dry_run" -eq 1 ]; then
     print_section "DRY-RUN: Execution Simulation"
     print_info "No package changes will be applied"
-    print_info "Would execute: sudo pacman -R ${remove_targets[*]}"
+    print_info "Would execute: sudo pacman -Rns ${remove_targets[*]}"
 
     for line in "${plan_lines[@]}"; do
         IFS='|' read -r pkg action source reason <<< "$line"
@@ -148,7 +150,7 @@ if [ "$dry_run" -eq 1 ]; then
             print_warning "$pkg -> already absent (skip)"
             record_history "remove" "$pkg" "$source" "skipped" "dry-run:$reason"
         else
-            print_info "$pkg -> would execute: sudo pacman -R $pkg"
+            print_info "$pkg -> would execute: sudo pacman -Rns $pkg"
             record_history "remove" "$pkg" "$source" "planned" "dry-run:$reason"
         fi
     done
@@ -163,8 +165,15 @@ print_section "Execution Plan"
 print_info "Targets: ${remove_targets[*]}"
 print_info "Summary: remove=$installed_count skip=$missing_count"
 
+for line in "${plan_lines[@]}"; do
+    IFS='|' read -r pkg action source reason <<< "$line"
+    if [ "$action" = "skip" ]; then
+        record_history "remove" "$pkg" "$source" "skipped" "$reason"
+    fi
+done
+
 if [ "$auto_yes" -ne 1 ]; then
-    read -p "Are you sure? (y/N) " -n 1 -r
+    read -p "Are you sure you want to remove these packages and unneeded dependencies? (y/N) " -n 1 -r
     echo ""
 fi
 
@@ -174,7 +183,12 @@ if [ "$auto_yes" -eq 1 ] || [[ $REPLY =~ ^[Yy]$ ]]; then
     log "Remove requested for packages: ${remove_targets[*]}"
     echo ""
 
-    sudo pacman -R "${remove_targets[@]}"
+    pacman_remove_flags=("-Rns")
+    if [ "$auto_yes" -eq 1 ]; then
+        pacman_remove_flags+=("--noconfirm")
+    fi
+
+    sudo pacman "${pacman_remove_flags[@]}" "${remove_targets[@]}"
     
     if [ $? -eq 0 ]; then
         for pkg in "${remove_targets[@]}"; do

@@ -17,8 +17,8 @@ while [ $# -gt 0 ]; do
     case "$1" in
         --limit)
             shift
-            if [ -z "$1" ] || ! [[ "$1" =~ ^[0-9]+$ ]]; then
-                die "Invalid --limit value"
+            if [ -z "$1" ] || ! [[ "$1" =~ ^[1-9][0-9]*$ ]]; then
+                die "Invalid --limit value (must be a positive integer)"
             fi
             limit="$1"
             ;;
@@ -65,7 +65,8 @@ if [ ! -s "$HISTORY_FILE" ]; then
 fi
 
 echo ""
-history_data="$(tail -n "$limit" "$HISTORY_FILE")"
+
+history_data="$(cat "$HISTORY_FILE")"
 
 if [ -n "$action_filter" ]; then
     history_data="$(printf "%s\n" "$history_data" | awk -F'|' -v a="$action_filter" '$2==a')"
@@ -75,10 +76,14 @@ if [ -n "$status_filter" ]; then
     history_data="$(printf "%s\n" "$history_data" | awk -F'|' -v s="$status_filter" '$5==s')"
 fi
 
-if [ -z "$(printf "%s\n" "$history_data" | sed '/^\s*$/d')" ]; then
+history_data="$(printf "%s\n" "$history_data" | sed '/^\s*$/d')"
+
+if [ -z "$history_data" ]; then
     print_warning "No history matched the selected filters"
     exit 0
 fi
+
+history_data="$(printf "%s\n" "$history_data" | tail -n "$limit")"
 
 if [ "$summary" -eq 1 ]; then
     print_section "Summary by action"
