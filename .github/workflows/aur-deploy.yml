@@ -25,7 +25,6 @@ jobs:
           git config --global user.email "bangkah@aur.archlinux.org"
 
           git clone ssh://aur@aur.archlinux.org/atha.git ../aur-atha
-
           cp PKGBUILD ../aur-atha/PKGBUILD
           cd ../aur-atha
 
