@@ -19,7 +19,7 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -t ed25519,rsa aur.archlinux.org >> ~/.ssh/known_hosts
 
-      - name: Clone AUR Repo & Sync PKGBUILD
+      - name: Sync and Push to AUR
         run: |
           git config --global user.name "Bangkah"
           git config --global user.email "bangkah@aur.archlinux.org"
