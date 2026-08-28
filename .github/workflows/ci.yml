@@ -1,0 +1,26 @@
+name: CI (Test & Lint)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup ShellCheck
+        uses: ludeeus/action-shellcheck@2.0.0
+        env:
+          SHELLCHECK_OPTS: "-e SC2154,SC2086"
+
+      - name: Run ShellCheck on Executable & Commands
+        run: |
+          echo "Linting main executable..."
+          shellcheck atha
+          echo "Linting command modules..."
+          shellcheck commands/*

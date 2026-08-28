@@ -1,0 +1,60 @@
+name: CD (Publish to AUR)
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  aur-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install pacman and makepkg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-exec makepkg pacman-package-manager
+
+      - name: Setup SSH for AUR
+        env:
+          AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$AUR_SSH_PRIVATE_KEY" > ~/.ssh/aur_id_rsa
+          chmod 600 ~/.ssh/aur_id_rsa
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+          
+          git config --global user.name "Bangkah"
+          git config --global user.email "bangkah@aur.archlinux.org"
+          
+          cat << EOF > ~/.ssh/config
+          Host aur.archlinux.org
+            IdentityFile ~/.ssh/aur_id_rsa
+            User aur
+          EOF
+
+      - name: Generate .SRCINFO & Sync to AUR
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          
+          # Update PKGBUILD version dynamically from tag if needed, or ensure it matches
+          sed -i "s/^pkgver=.*/pkgver=$VERSION/" PKGBUILD
+          sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
+          
+          # Generate .SRCINFO locally using makepkg
+          makepkg --printsrcinfo > .SRCINFO
+          
+          # Clone AUR repository
+          git clone ssh://aur@aur.archlinux.org/atha.git ../aur-atha
+          
+          # Copy updated files
+          cp PKGBUILD ../aur-atha/
+          cp .SRCINFO ../aur-atha/
+          
+          # Push to AUR
+          cd ../aur-atha
+          git add PKGBUILD .SRCINFO
+          git commit -m "maint: release version $VERSION" || echo "No changes to commit"
+          git push origin master
